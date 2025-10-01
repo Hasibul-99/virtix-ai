@@ -1,8 +1,8 @@
 import AIGrowth from '../../components/AIGrowth';
 import CTA from '../../components/CTA';
-import CustomerInteractions from '../../components/CustomerInteractions';
-import ExploreAgents from '../../components/ExploreAgents';
-import Hero from '../../components/Hero';
+import CustomerInteractions from '../../components/pages/home/CustomerInteractions';
+import ExploreAgents from '../../components/pages/home/ExploreAgents';
+import Hero from '../../components/pages/home/Hero';
 import Pricing from '../../components/Pricing';
 
 function Home() {

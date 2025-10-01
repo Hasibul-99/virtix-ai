@@ -13,7 +13,7 @@ function App() {
           colorWarning: '#f59e0b',
           colorError: '#ef4444',
           borderRadius: 8,
-          fontFamily: 'Inter, system-ui, sans-serif',
+          fontFamily: 'SF Compact, system-ui, sans-serif',
         },
         components: {
           Button: {
