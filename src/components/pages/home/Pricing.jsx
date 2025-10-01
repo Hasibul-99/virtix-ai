@@ -1,4 +1,4 @@
-import React from 'react';
+import { Button } from 'antd';
 import { Check } from 'lucide-react';
 
 const Pricing = () => {
@@ -6,7 +6,7 @@ const Pricing = () => {
     {
       name: "Starter",
       price: "$0",
-      period: "Forever",
+      period: "/Month",
       description: "Perfect for getting started",
       features: [
         "Up to 100 conversations/month",
@@ -22,7 +22,7 @@ const Pricing = () => {
     {
       name: "Professional",
       price: "$9.76 USD",
-      period: "per month",
+      period: "/Month",
       description: "Best for growing businesses",
       features: [
         "Up to 1,000 conversations/month",
@@ -40,7 +40,7 @@ const Pricing = () => {
     {
       name: "Enterprise",
       price: "$99.76 USD",
-      period: "per month",
+      period: "/Month",
       description: "For large-scale operations",
       features: [
         "Unlimited conversations",
@@ -59,37 +59,35 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="pricing">
-      <div className="container">
-        <div className="pricing-header">
-          <h2 className="section-title">Predictable pricing scalable plans</h2>
-          <p className="section-description">
-            Choose the perfect plan for your business needs. Start free and scale as you grow.
+    <section className="pricing min-h-screen py-20">
+      <div className="container growth-content flex flex-col items-center justify-center gap-8">
+        <div className="md:w-3xl space-y-4">
+          <h2 className="text-6xl leading-[120%] text-[#0C0900] font-bold text-center">Predictable pricing scalable plans</h2>
+          <p className="font-normal text-base leading-[140%] text-[#0C0900] text-center">
+            Designed for every stage of your journey.
           </p>
         </div>
-        <div className="pricing-grid">
+        <div className="grid grid-cols-3 gap-4">
           {plans.map((plan, index) => (
-            <div key={index} className={`pricing-card ${plan.popular ? 'popular' : ''}`}>
-              {plan.popular && <div className="popular-badge">Most Popular</div>}
-              <div className="plan-header">
-                <h3 className="plan-name">{plan.name}</h3>
-                <div className="plan-price">
+            <div key={index} className={` rounded-[20px] p-6 ${plan.popular ? 'bg-[#F4EDFF] border-2 border-[#6200FF]' : 'bg-[linear-gradient(172.42deg,#FFFFFF_4.56%,#E7D7FF_50.03%,#FFFFFF_95.51%)] border border-[#ECECEC]'}`}>
+              <div className="space-y-2">
+                <h3 className="text-xl leading-[140%] text-[#0C0900] font-semibold">{plan.name}</h3>
+                <div className="plan-price text-2xl leading-[140%] text-[#0C0900] font-semibold">
                   <span className="price">{plan.price}</span>
-                  <span className="period">{plan.period}</span>
                 </div>
-                <p className="plan-description">{plan.description}</p>
+
+                <div className="text-[18px] leading-[160%] text-[#0C0900] font-medium">{plan.period}</div>
+                <Button type="primary" className='w-full'>Primary Button</Button>
               </div>
-              <div className="plan-features">
+              <div className="plan-features mt-6">
                 {plan.features.map((feature, featureIndex) => (
-                  <div key={featureIndex} className="feature">
+                  <div key={featureIndex} className="flex md:flex-row flex-col gap-2">
                     <Check size={16} className="check-icon" />
                     <span>{feature}</span>
                   </div>
                 ))}
               </div>
-              <button className={`plan-button ${plan.popular ? 'primary' : 'secondary'}`}>
-                {plan.buttonText}
-              </button>
+
             </div>
           ))}
         </div>

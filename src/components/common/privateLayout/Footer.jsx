@@ -1,55 +1,27 @@
-import React from 'react';
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <div className="logo">
-              <span className="logo-icon">🤖</span>
-              <span className="logo-text">VIRTIS AI</span>
+    <footer className="footer bg-[#1a1a1a] text-white">
+      <div className="md:w-3xl flex justify-between items-center flex-col gap-6 mx-auto py-20">
+        <div className="footer-content space-y-6">
+          <div className="footer-brand mx-auto space-y-6">
+            <div className="logo ">
+              <img src="/assets/logo/LogoWhite.png" alt="Virtis AI" className="w-[120px] h-[40px] mx-auto" />
             </div>
-            <p className="footer-description">
-              Supercharge your customer service with AI-powered agents that work 24/7.
+            <p className="footer-description text-center">
+              Unleash enterprise-grade AI agents to instantly engage, qualify, & convert inbound leads into pipeline & revenue.
             </p>
           </div>
-          <div className="footer-links">
-            <div className="link-group">
-              <h4>Product</h4>
-              <ul>
-                <li><a href="#">Features</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">API</a></li>
-                <li><a href="#">Integrations</a></li>
-              </ul>
-            </div>
-            <div className="link-group">
-              <h4>Company</h4>
-              <ul>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Careers</a></li>
-                <li><a href="#">Contact</a></li>
-              </ul>
-            </div>
-            <div className="link-group">
-              <h4>Support</h4>
-              <ul>
-                <li><a href="#">Help Center</a></li>
-                <li><a href="#">Documentation</a></li>
-                <li><a href="#">Status</a></li>
-                <li><a href="#">Community</a></li>
-              </ul>
-            </div>
+          <div className="flex flex-row gap-6 justify-center items-center ">
+            <Link href="/" className="footer-link">Home</Link>
+            <Link href="/" className="footer-link">Feature</Link>
+            <Link href="/" className="footer-link">Price</Link>
+            <Link href="/" className="footer-link">Contact</Link>
           </div>
         </div>
         <div className="footer-bottom">
           <p>&copy; 2024 Virtis AI. All rights reserved.</p>
-          <div className="footer-legal">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-          </div>
         </div>
       </div>
     </footer>
