@@ -1,12 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import PrivateLayout from './layouts/PrivateLayout.jsx';
 import PublicLayout from './layouts/publicLayout.jsx';
-import Home from './pages/public/Home.jsx';
-import Signin from './pages/auth/Signin.jsx';
-import Signup from './pages/auth/Signup.jsx';
 import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
+import Signin from './pages/auth/Signin.jsx';
+import Signup from './pages/auth/Signup.jsx';
 import Chat from './pages/private/Chat.jsx';
+import Features from './pages/public/Features.jsx';
+import Home from './pages/public/Home.jsx';
 
 export default function Routers() {
   return (
@@ -15,6 +16,7 @@ export default function Routers() {
       <Routes>
         <Route path='/' element={<PublicLayout />}>
           <Route path='/' element={<Home />} />
+          <Route path='/features' element={<Features />} />
         </Route>
         <Route path='/' element={<PublicLayout />}>
           <Route path='/signin' element={<Signin />} />
