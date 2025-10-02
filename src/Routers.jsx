@@ -8,6 +8,7 @@ import Signup from './pages/auth/Signup.jsx';
 import Chat from './pages/private/Chat.jsx';
 import Features from './pages/public/Features.jsx';
 import Home from './pages/public/Home.jsx';
+import Pricing from './pages/public/pricing.jsx';
 
 export default function Routers() {
   return (
@@ -17,6 +18,7 @@ export default function Routers() {
         <Route path='/' element={<PublicLayout />}>
           <Route path='/' element={<Home />} />
           <Route path='/features' element={<Features />} />
+          <Route path='/pricing' element={<Pricing />} />
         </Route>
         <Route path='/' element={<PublicLayout />}>
           <Route path='/signin' element={<Signin />} />
