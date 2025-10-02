@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
+import AuthHeader from '../components/common/authLayout/AuthHeader'
 
 export default function AuthLayout() {
   const token = Cookies.get('kotha_token')
@@ -12,10 +13,9 @@ export default function AuthLayout() {
   }, [token])
 
   return (
-    <div className='bg-[#F3F3F3] dark:bg-gray-700 min-h-screen flex'>
-      <div className='inline-flex items-center m-auto align-middle'>
-        <Outlet />
-      </div>
-    </div>
+    <Fragment>
+      <AuthHeader />
+      <Outlet />
+    </Fragment>
   )
 }

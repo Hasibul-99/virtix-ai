@@ -5,14 +5,9 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const toggleProfileDropdown = () => {
-    setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
   return (
@@ -40,21 +35,21 @@ const Header = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link
-              to="#"
+              to="/features"
               className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
             >
               Feature
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link
-              to="#"
+              to="/prising"
               className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
             >
               Pricing
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link
-              to="#"
+              to="/contact"
               className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
             >
               Contact

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AuthLayout from './layouts/AuthLayout.jsx';
 import PrivateLayout from './layouts/PrivateLayout.jsx';
 import PublicLayout from './layouts/publicLayout.jsx';
 import ForgetPassword from './pages/auth/ForgetPassword.jsx';
@@ -22,7 +23,7 @@ export default function Routers() {
           <Route path='/pricing' element={<Pricing />} />
           <Route path='/contact' element={<Contact />} />
         </Route>
-        <Route path='/' element={<PublicLayout />}>
+        <Route path='/' element={<AuthLayout />}>
           <Route path='/signin' element={<Signin />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/forget-password' element={<ForgetPassword />} />
