@@ -1,13 +1,11 @@
+import ContactUs from "../../components/pages/contact/ContactUs";
 import CTA from "../../components/pages/home/CTA";
 import CustomerInteractions from "../../components/pages/home/CustomerInteractions";
-import ComparePlans from "../../components/pages/pricing/comparePlans";
-import Hero from "../../components/pages/pricing/Hero";
 
-export default function Pricing() {
+export default function Contact() {
   return (
     <>
-      <Hero />
-      <ComparePlans />
+      <ContactUs />
       <CustomerInteractions />
       <CTA />
     </>

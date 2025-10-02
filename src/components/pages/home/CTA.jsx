@@ -2,7 +2,7 @@ import { Button } from 'antd';
 
 const CTA = () => {
   return (
-    <section className="cta mb-20">
+    <section className="cta my-20">
       <div className="container bg-[#6200FF] rounded-4xl">
         <div className="cta-content text-white py-[60px] px-[100px] space-y-6  text-center">
           <h2 className="text-[52px] leading-[120%] text-center font-extrabold">

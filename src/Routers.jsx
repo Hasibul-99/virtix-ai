@@ -6,9 +6,10 @@ import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Signin from './pages/auth/Signin.jsx';
 import Signup from './pages/auth/Signup.jsx';
 import Chat from './pages/private/Chat.jsx';
+import Contact from './pages/public/Contact.jsx';
 import Features from './pages/public/Features.jsx';
 import Home from './pages/public/Home.jsx';
-import Pricing from './pages/public/pricing.jsx';
+import Pricing from './pages/public/Pricing.jsx';
 
 export default function Routers() {
   return (
@@ -19,6 +20,7 @@ export default function Routers() {
           <Route path='/' element={<Home />} />
           <Route path='/features' element={<Features />} />
           <Route path='/pricing' element={<Pricing />} />
+          <Route path='/contact' element={<Contact />} />
         </Route>
         <Route path='/' element={<PublicLayout />}>
           <Route path='/signin' element={<Signin />} />
