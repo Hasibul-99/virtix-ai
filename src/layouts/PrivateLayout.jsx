@@ -1,30 +1,14 @@
 import {
-  LaptopOutlined, LeftOutlined,
-  NotificationOutlined,
+  LeftOutlined,
   RightOutlined, UserOutlined
 } from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Avatar, Button, Layout, Menu, theme } from 'antd';
 import Cookies from 'js-cookie';
 import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, SquareChartGantt, Users } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 const { Header, Content, Sider } = Layout;
 
-const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
-  const key = String(index + 1);
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
-    children: Array.from({ length: 4 }).map((_, j) => {
-      const subKey = index * 4 + j + 1;
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      };
-    }),
-  };
-});
 export default function PrivateLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -45,15 +29,17 @@ export default function PrivateLayout() {
           type="text"
           icon={collapsed ? <RightOutlined /> : <LeftOutlined />}
           onClick={() => setCollapsed(!collapsed)}
+          size='large'
           style={{
             fontSize: '16px',
-            width: 64,
-            height: 64,
           }}
           className='!bg-gray-200 rounded-lg mr-4'
         />
         <div className="demo-logo font-semibold text-2xl" >Agent name</div>
 
+        <div className='ml-auto'>
+          <Avatar size="large" shape="square" icon={<UserOutlined />} />
+        </div>
       </Header>
       <Layout>
         <Sider width={200} style={{ background: colorBgContainer }} trigger={null} collapsible collapsed={collapsed}>

@@ -6,7 +6,7 @@ import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Signin from './pages/auth/Signin.jsx';
 import Signup from './pages/auth/Signup.jsx';
-import Chat from './pages/private/Chat.jsx';
+import Dashboard from './pages/private/Dashboard.jsx';
 import Contact from './pages/public/Contact.jsx';
 import Features from './pages/public/Features.jsx';
 import Home from './pages/public/Home.jsx';
@@ -29,8 +29,8 @@ export default function Routers() {
           <Route path='/forget-password' element={<ForgetPassword />} />
           <Route path='/reset-password' element={<ResetPassword />} />
         </Route>
-        <Route element={<PrivateLayout />}>
-          <Route path='chat' element={<Chat />} />
+        <Route path='/dashboard' element={<PrivateLayout />}>
+          <Route path='/dashboard' element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
