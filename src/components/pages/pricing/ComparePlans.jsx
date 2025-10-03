@@ -62,7 +62,7 @@ export default function ComparePlans() {
       <div className="container ">
         <div className="space-y-8 text-center ">
           <div className='md:w-3xl mx-auto space-y-6'>
-            <h1 className="font-normal text-6xl leading-[120%] text-[#0C0900] font-semibold">
+            <h1 className="text-6xl leading-[120%] text-[#0C0900] font-semibold">
               Compare plans
             </h1>
 

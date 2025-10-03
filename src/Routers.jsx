@@ -6,6 +6,7 @@ import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Signin from './pages/auth/Signin.jsx';
 import Signup from './pages/auth/Signup.jsx';
+import ChatHistory from './pages/private/ChatHistory.jsx';
 import Dashboard from './pages/private/Dashboard.jsx';
 import Contact from './pages/public/Contact.jsx';
 import Features from './pages/public/Features.jsx';
@@ -31,6 +32,7 @@ export default function Routers() {
         </Route>
         <Route path='/dashboard' element={<PrivateLayout />}>
           <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='chat-history' element={<ChatHistory />} />
         </Route>
       </Routes>
     </BrowserRouter>

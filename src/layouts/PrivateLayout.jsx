@@ -51,7 +51,7 @@ export default function PrivateLayout() {
             style={{ height: '100%', borderInlineEnd: 0 }}
             items={[
               { key: '1', icon: <LayoutDashboard />, label: <Link to={'/dashboard'}>Dashboard</Link> },
-              { key: '2', icon: <MessageCircleReply />, label: <Link to={'/dashboard'}>Chat History</Link> },
+              { key: '2', icon: <MessageCircleReply />, label: <Link to={'/dashboard/chat-history'}>Chat History</Link> },
               { key: '3', icon: <SquareChartGantt />, label: <Link to={'/dashboard'}>Manage Prompts</Link> },
               { key: '4', icon: <Files />, label: <Link to={'/dashboard'}>Manage Data Files</Link> },
               { key: '5', icon: <Users />, label: <Link to={'/dashboard'}>Customers</Link> },
