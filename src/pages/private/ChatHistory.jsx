@@ -1,4 +1,5 @@
 import { Button, Card, Table } from 'antd';
+import { Download, SlidersHorizontal } from 'lucide-react';
 
 
 const columns = [
@@ -55,14 +56,17 @@ export default function ChatHistory() {
   };
   return (
     <div>
-      <Card className='flex justify-between items-center mb-6' >
-        <h1 className="text-2xl font-bold">
-          Chat History
-        </h1>
-        <div>
-          <Button icon={<SearchOutlined />}>Filter</Button>
-          <Button icon={<SearchOutlined />}>Export</Button>
+      <Card  >
+        <div className='flex justify-between items-center mb-6'>
+          <h1 className="text-2xl font-bold">
+            Chat History
+          </h1>
+          <div className='flex gap-4' >
+            <Button icon={<SlidersHorizontal />}>Filter</Button>
+            <Button icon={<Download />}>Export</Button>
+          </div>
         </div>
+
       </Card>
       <Table
         rowSelection={{ type: 'checkbox', ...rowSelection }}

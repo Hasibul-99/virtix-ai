@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { Menu, Search, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -15,15 +15,14 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-sm border-b border-[#ECECEC] z-50 rounded-3xl">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <div className="flex items-center space-x-4">
-            <div className="flex-shrink-0">
-              <img
-                src="/assets/logo/Logo.png"
-                alt="VIRTIS AI"
-                className="h-8 w-auto"
-              />
-            </div>
-          </div>
+          <Link to="/" className="flex items-center space-x-4"><div className="flex-shrink-0">
+            <img
+              src="/assets/logo/Logo.png"
+              alt="VIRTIS AI"
+              className="h-8 w-auto"
+            />
+          </div></Link>
+
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -42,7 +41,7 @@ const Header = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link
-              to="/prising"
+              to="/pricing"
               className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
             >
               Pricing
@@ -59,8 +58,12 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="outlined">Sign in</Button>
-            <Button type="primary">Sign up</Button>
+            <Link to="/signin" >
+              <Button variant="outlined">Sign in</Button>
+            </Link>
+            <Link to="/signup" >
+              <Button type="primary">Sign up</Button>
+            </Link>
 
             {/* Mobile menu button */}
             <button
@@ -87,35 +90,23 @@ const Header = () => {
                 Home
               </Link>
               <Link
-                to="#"
+                to="/features"
                 className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
               >
                 Feature
               </Link>
               <Link
-                to="#"
+                to="/pricing"
                 className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
               >
                 Pricing
               </Link>
               <Link
-                to="#"
+                to="/contact"
                 className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
               >
                 Contact
               </Link>
-            </div>
-
-            {/* Mobile Search */}
-            <div className="mt-4 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-gray-50 focus:bg-white transition-colors duration-200"
-              />
             </div>
           </div>
         )}
