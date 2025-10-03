@@ -1,6 +1,5 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Table } from 'antd';
-import { Download, SlidersHorizontal } from 'lucide-react';
-
 
 const columns = [
   {
@@ -43,35 +42,25 @@ const data = [
     address: 'Sydney No. 1 Lake Park',
   },
 ];
-export default function ChatHistory() {
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
-  };
+export default function ManagePrompts() {
   return (
     <div>
       <Card>
         <div className='flex justify-between items-center'>
           <h1 className="text-2xl font-bold">
-            Chat History
+            Manage Prompts
           </h1>
           <div className='flex gap-4' >
-            <Button icon={<SlidersHorizontal />}>Filter</Button>
-            <Button icon={<Download />}>Export</Button>
+            <Button type="primary" icon={<PlusOutlined />}>Add prompt</Button>
           </div>
         </div>
       </Card>
       <Card>
         <Table
-          rowSelection={{ type: 'checkbox', ...rowSelection }}
           columns={columns}
           dataSource={data}
+          pagination={false}
         />
       </Card>
     </div>

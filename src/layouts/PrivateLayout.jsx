@@ -52,9 +52,9 @@ export default function PrivateLayout() {
             items={[
               { key: '1', icon: <LayoutDashboard />, label: <Link to={'/dashboard'}>Dashboard</Link> },
               { key: '2', icon: <MessageCircleReply />, label: <Link to={'/dashboard/chat-history'}>Chat History</Link> },
-              { key: '3', icon: <SquareChartGantt />, label: <Link to={'/dashboard'}>Manage Prompts</Link> },
-              { key: '4', icon: <Files />, label: <Link to={'/dashboard'}>Manage Data Files</Link> },
-              { key: '5', icon: <Users />, label: <Link to={'/dashboard'}>Customers</Link> },
+              { key: '3', icon: <SquareChartGantt />, label: <Link to={'/dashboard/manage-prompts'}>Manage Prompts</Link> },
+              { key: '4', icon: <Files />, label: <Link to={'/dashboard/manage-files'}>Manage Data Files</Link> },
+              { key: '5', icon: <Users />, label: <Link to={'/dashboard/customers'}>Customers</Link> },
               { key: '6', icon: <Settings />, label: <Link to={'/dashboard'}>Agent Settings</Link> },
               { key: '7', icon: <ClipboardMinus />, label: <Link to={'/dashboard'}>Reports</Link> },
             ]}
