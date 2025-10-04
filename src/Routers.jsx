@@ -6,6 +6,7 @@ import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Signin from './pages/auth/Signin.jsx';
 import Signup from './pages/auth/Signup.jsx';
+import AgentSettings from './pages/private/AgentSettings.jsx';
 import ChatHistory from './pages/private/ChatHistory.jsx';
 import Customers from './pages/private/Customers.jsx';
 import Dashboard from './pages/private/Dashboard.jsx';
@@ -39,6 +40,7 @@ export default function Routers() {
           <Route path='manage-prompts' element={<ManagePrompts />} />
           <Route path='manage-files' element={<ManageFiles />} />
           <Route path='customers' element={<Customers />} />
+          <Route path='agent-settings' element={<AgentSettings />} />
         </Route>
       </Routes>
     </BrowserRouter>
