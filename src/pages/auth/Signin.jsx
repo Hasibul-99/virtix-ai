@@ -1,17 +1,18 @@
 import { Button, Checkbox, Form, Input, Typography } from 'antd';
 import { useState } from 'react';
+import { LOGIN_USER } from '../../scripts/api';
+import { postData } from '../../scripts/api-service';
 
 const { Title, Text, Link } = Typography;
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setLoading(true);
-    console.log('Success:', values);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
+    const res = await postData(LOGIN_USER, values, true);
+    console.log('Login response:', res);
+    setLoading(false);
   };
 
   return (

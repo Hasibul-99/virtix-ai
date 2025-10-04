@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import { checkRes } from './helper'
 
 // axios.defaults.headers.post["Accept"] = "application/json";
-const base_url = process.env.REACT_APP_BASE_URL
+const base_url = import.meta.env.VITE_BASE_URL
 
 /* query ---> api url to query with
    no_token ---> acts as a flag for no need to use token */
