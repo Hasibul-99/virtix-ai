@@ -7,14 +7,14 @@ import Pricing from '../../components/pages/home/Pricing';
 
 function Home() {
   return (
-    <div>
+    <>
       <Hero />
       <ExploreAgents />
       <CustomerInteractions />
       <AIGrowth />
       <Pricing />
       <CTA />
-    </div>
+    </>
   );
 }
 

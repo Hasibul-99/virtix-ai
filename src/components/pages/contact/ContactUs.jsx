@@ -10,7 +10,7 @@ export default function ContactUs() {
   };
 
   return (
-    <section className="hero-section min-h-screen bg-gradient-to-br from-[#f3e7ff] via-[#e7f0ff] to-[#e7ffe7] pt-40 pb-20">
+    <section className="hero-section pt-40 pb-20">
       <div className="container ">
         <div className="md:w-3xl space-y-4 text-center mx-auto">
           <h1 className="text-6xl leading-[120%] text-[#0C0900] font-semibold">

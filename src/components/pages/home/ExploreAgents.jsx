@@ -26,7 +26,7 @@ const ExploreAgents = () => {
   ];
 
   return (
-    <section className="explore-agents min-h-screen bg-gradient-to-br from-[#f3e7ff] via-[#e7f0ff] to-[#e7ffe7] py-20">
+    <section className="explore-agents py-20">
       <div className="container flex flex-col items-center justify-center gap-8">
         <h2 className="text-6xl leading-[120%] text-[#0C0900] font-bold">Explore Public AI Agents</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

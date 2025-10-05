@@ -16,7 +16,9 @@ export default function PublicLayout() {
   return (
     <Fragment>
       <Header />
-      <Outlet />
+      <div className='bg-gradient-to-br from-[#f3e7ff] via-[#e7f0ff] to-[#e7ffe7]'>
+        <Outlet />
+      </div>
       <Footer />
     </Fragment>
   )

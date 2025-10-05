@@ -9,7 +9,7 @@ const CustomerInteractionsRevarce = () => {
   ];
 
   return (
-    <section className="customer-interactions min-h-screen bg-gradient-to-br from-[#f3e7ff] via-[#e7f0ff] to-[#e7ffe7] py-20">
+    <section className="customer-interactions py-20">
       <div className="container">
         <div className="flex md:flex-row flex-col items-center justify-center gap-8">
           <div className="flex-1">

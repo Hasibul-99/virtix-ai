@@ -1,7 +1,7 @@
 
 const AIGrowth = () => {
   return (
-    <section className="ai-growth min-h-screen bg-gradient-to-br from-[#f3e7ff] via-[#e7f0ff] to-[#e7ffe7] py-20">
+    <section className="ai-growth py-20">
       <div className="container">
         <div className="growth-content flex flex-col items-center justify-center gap-8">
           <div className='md:w-3xl space-y-4'>

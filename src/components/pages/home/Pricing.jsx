@@ -59,7 +59,7 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="pricing min-h-screen py-20">
+    <section className="pricing py-20">
       <div className="container growth-content flex flex-col items-center justify-center gap-8">
         <div className="md:w-3xl space-y-4">
           <h2 className="text-6xl leading-[120%] text-[#0C0900] font-bold text-center">Predictable pricing scalable plans</h2>
