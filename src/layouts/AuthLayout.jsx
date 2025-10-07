@@ -8,7 +8,7 @@ export default function AuthLayout() {
 
   useEffect(() => {
     if (token) {
-      window.location = '/chat'
+      window.location = '/'
     }
   }, [token])
 

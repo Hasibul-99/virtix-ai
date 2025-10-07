@@ -1,10 +1,57 @@
-import { Button } from 'antd';
+import { DownOutlined, LogoutOutlined, UserOutlined, DashboardOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Space, message } from 'antd';
+import Cookies from 'js-cookie';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { logoutUser } from '../../../scripts/api-service';
 
 const Header = () => {
+  const token = Cookies.get('kotha_token')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      message.loading('Logging out...', 0.5);
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout error:', error);
+      message.error('Logout failed. Please try again.');
+    }
+  };
+
+  const handleMenuClick = ({ key }) => {
+    if (key === 'logout') {
+      handleLogout();
+    } else if (key === 'profile') {
+      navigate('/profile');
+    } else if (key === 'dashboard') {
+      navigate('/dashboard');
+    }
+  };
+
+  const items = [
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
+      label: 'Profile',
+    },
+    {
+      key: 'dashboard',
+      icon: <DashboardOutlined />,
+      label: 'Dashboard',
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: 'Logout',
+      danger: true,
+    },
+  ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -58,12 +105,33 @@ const Header = () => {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
-            <Link to="/signin" >
-              <Button variant="outlined">Sign in</Button>
-            </Link>
-            <Link to="/signup" >
-              <Button type="primary">Sign up</Button>
-            </Link>
+            {token ? (
+              <Dropdown 
+                menu={{ 
+                  items,
+                  onClick: handleMenuClick 
+                }}
+                placement="bottomRight"
+                arrow
+              >
+                <Button type="text" className="flex items-center">
+                  <Space>
+                    <UserOutlined />
+                    Account
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
+            ) : (
+              <>
+                <Link to="/signin" >
+                  <Button variant="outlined">Sign in</Button>
+                </Link>
+                <Link to="/signup" >
+                  <Button type="primary">Sign up</Button>
+                </Link>
+              </>
+            )}
 
             {/* Mobile menu button */}
             <button

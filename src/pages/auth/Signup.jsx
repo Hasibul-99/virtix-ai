@@ -1,19 +1,61 @@
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, Form, Input, Typography, message, Select, DatePicker } from 'antd';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { REGISTER_USER } from '../../scripts/api';
+import { postData } from '../../scripts/api-service';
+import { handleApiError } from '../../scripts/helper';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
+const { Option } = Select;
 
 export default function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setLoading(true);
-    console.log('Success:', values);
-    setTimeout(() => {
+    try {
+      // Format the data according to API requirements
+      const signupData = {
+        email: values.email,
+        password1: values.password,
+        password2: values.confirmPassword,
+        first_name: values.firstName,
+        last_name: values.lastName,
+        date_of_birth: values.dateOfBirth ? dayjs(values.dateOfBirth).format('YYYY-MM-DD') : '',
+        gender: values.gender || 'MALE',
+        phone_number: values.phone,
+        organization: values.organization || '',
+        address: values.address || '',
+        city: values.city || '',
+        country: values.country || '',
+        theme: 'light',
+        language: 'en',
+        voice: 'en',
+        subscribe_to_notification: 'False'
+      };
+
+      const res = await postData(REGISTER_USER, signupData, true);
+      
+      if (res) {
+        message.success('Account created successfully! Please check your email for verification.');
+        form.resetFields();
+        // Redirect to signin page after successful registration
+        setTimeout(() => {
+          navigate('/signin');
+        }, 2000);
+      } else {
+        message.error('Registration failed. Please try again.');
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      message.error(errorMessage || 'Registration failed. Please try again.');
+      console.error('Signup error:', error);
+    } finally {
       setLoading(false);
-      form.resetFields();
-    }, 1500);
+    }
   };
 
   return (
@@ -46,23 +88,41 @@ export default function SignupForm() {
           autoComplete="off"
           requiredMark={false}
         >
-          {/* Name Field */}
-          <Form.Item
-            label={<span className="text-gray-700 font-medium text-sm">Full Name</span>}
-            name="name"
-            rules={[
-              { required: true, message: 'Please input your name!' },
-              { min: 2, message: 'Name must be at least 2 characters!' }
-            ]}
-            className="mb-4"
-          >
-            <Input
-              placeholder="Enter your name"
-              size="large"
-              className="rounded-lg bg-gray-50 border-gray-200"
-              style={{ padding: '10px 12px' }}
-            />
-          </Form.Item>
+          {/* First Name Field */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <Form.Item
+              label={<span className="text-gray-700 font-medium text-sm">First Name</span>}
+              name="firstName"
+              rules={[
+                { required: true, message: 'Please input your first name!' },
+                { min: 2, message: 'First name must be at least 2 characters!' }
+              ]}
+            >
+              <Input
+                placeholder="Enter your first name"
+                size="large"
+                className="rounded-lg bg-gray-50 border-gray-200"
+                style={{ padding: '10px 12px' }}
+              />
+            </Form.Item>
+
+            {/* Last Name Field */}
+            <Form.Item
+              label={<span className="text-gray-700 font-medium text-sm">Last Name</span>}
+              name="lastName"
+              rules={[
+                { required: true, message: 'Please input your last name!' },
+                { min: 2, message: 'Last name must be at least 2 characters!' }
+              ]}
+            >
+              <Input
+                placeholder="Enter your last name"
+                size="large"
+                className="rounded-lg bg-gray-50 border-gray-200"
+                style={{ padding: '10px 12px' }}
+              />
+            </Form.Item>
+          </div>
 
           {/* Email Field */}
           <Form.Item
@@ -99,6 +159,97 @@ export default function SignupForm() {
               style={{ padding: '10px 12px' }}
             />
           </Form.Item>
+
+          {/* Date of Birth and Gender */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <Form.Item
+              label={<span className="text-gray-700 font-medium text-sm">Date of Birth</span>}
+              name="dateOfBirth"
+              rules={[
+                { required: true, message: 'Please select your date of birth!' }
+              ]}
+            >
+              <DatePicker
+                placeholder="Select date of birth"
+                size="large"
+                className="w-full rounded-lg bg-gray-50 border-gray-200"
+                style={{ padding: '10px 12px' }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-700 font-medium text-sm">Gender</span>}
+              name="gender"
+              rules={[
+                { required: true, message: 'Please select your gender!' }
+              ]}
+            >
+              <Select
+                placeholder="Select gender"
+                size="large"
+                className="rounded-lg"
+              >
+                <Option value="MALE">Male</Option>
+                <Option value="FEMALE">Female</Option>
+                <Option value="OTHER">Other</Option>
+              </Select>
+            </Form.Item>
+          </div>
+
+          {/* Organization Field */}
+          <Form.Item
+            label={<span className="text-gray-700 font-medium text-sm">Organization</span>}
+            name="organization"
+            className="mb-4"
+          >
+            <Input
+              placeholder="Enter your organization (optional)"
+              size="large"
+              className="rounded-lg bg-gray-50 border-gray-200"
+              style={{ padding: '10px 12px' }}
+            />
+          </Form.Item>
+
+          {/* Address Field */}
+          <Form.Item
+            label={<span className="text-gray-700 font-medium text-sm">Address</span>}
+            name="address"
+            className="mb-4"
+          >
+            <Input
+              placeholder="Enter your address (optional)"
+              size="large"
+              className="rounded-lg bg-gray-50 border-gray-200"
+              style={{ padding: '10px 12px' }}
+            />
+          </Form.Item>
+
+          {/* City and Country */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <Form.Item
+              label={<span className="text-gray-700 font-medium text-sm">City</span>}
+              name="city"
+            >
+              <Input
+                placeholder="Enter your city (optional)"
+                size="large"
+                className="rounded-lg bg-gray-50 border-gray-200"
+                style={{ padding: '10px 12px' }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={<span className="text-gray-700 font-medium text-sm">Country</span>}
+              name="country"
+            >
+              <Input
+                placeholder="Enter your country (optional)"
+                size="large"
+                className="rounded-lg bg-gray-50 border-gray-200"
+                style={{ padding: '10px 12px' }}
+              />
+            </Form.Item>
+          </div>
 
           {/* Password Field */}
           <Form.Item
@@ -184,9 +335,12 @@ export default function SignupForm() {
         <div className="text-center">
           <Text className="text-gray-500 text-sm">
             Already have an account?{' '}
-            <a href="#" className="text-purple-600 hover:text-purple-700 font-semibold no-underline">
+            <Link 
+              to="/signin"
+              className="text-purple-600 hover:text-purple-700 font-semibold no-underline"
+            >
               Sign in
-            </a>
+            </Link>
           </Text>
         </div>
       </div>

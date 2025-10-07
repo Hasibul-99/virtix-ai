@@ -1,12 +1,16 @@
 import {
   LeftOutlined,
-  RightOutlined, UserOutlined
+  LogoutOutlined,
+  RightOutlined,
+  SettingOutlined,
+  UserOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Layout, Menu, theme } from 'antd';
+import { Avatar, Button, Dropdown, Layout, Menu, message, theme } from 'antd';
 import Cookies from 'js-cookie';
 import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, SquareChartGantt, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import { logoutUser } from '../scripts/api-service';
 const { Header, Content, Sider } = Layout;
 
 export default function PrivateLayout() {
@@ -16,11 +20,43 @@ export default function PrivateLayout() {
   } = theme.useToken();
   const token = Cookies.get('kotha_token')
 
-  // useEffect(() => {
-  //   if (token) {
-  //     window.location = '/chat'
-  //   }
-  // }, [token])
+  useEffect(() => {
+    if (!token) {
+      window.location = '/'
+    }
+  }, [token])
+
+  const handleLogout = async () => {
+    try {
+      message.loading('Logging out...', 0.5);
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout error:', error);
+      message.error('Logout failed. Please try again.');
+    }
+  };
+
+  const userMenuItems = [
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
+      label: 'Profile',
+    },
+    {
+      key: 'settings',
+      icon: <SettingOutlined />,
+      label: 'Settings',
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: 'Logout',
+      onClick: handleLogout,
+    },
+  ];
 
   return (
     <Layout>
@@ -38,7 +74,26 @@ export default function PrivateLayout() {
         <div className="demo-logo font-semibold text-2xl" >Agent name</div>
 
         <div className='ml-auto'>
-          <Avatar size="large" shape="square" icon={<UserOutlined />} />
+          <Dropdown
+            menu={{
+              items: userMenuItems,
+              onClick: ({ key }) => {
+                const item = userMenuItems.find(item => item.key === key);
+                if (item && item.onClick) {
+                  item.onClick();
+                }
+              }
+            }}
+            placement="bottomRight"
+            arrow
+          >
+            <Avatar
+              size="large"
+              shape="square"
+              icon={<UserOutlined />}
+              className="cursor-pointer hover:bg-gray-100 transition-colors"
+            />
+          </Dropdown>
         </div>
       </Header>
       <Layout>

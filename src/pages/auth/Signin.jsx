@@ -1,18 +1,45 @@
-import { Button, Checkbox, Form, Input, Typography } from 'antd';
+import { Button, Checkbox, Form, Input, Typography, message } from 'antd';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { LOGIN_USER } from '../../scripts/api';
 import { postData } from '../../scripts/api-service';
+import { handleApiError, setAuthToken } from '../../scripts/helper';
 
-const { Title, Text, Link } = Typography;
+const { Title, Text } = Typography;
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     setLoading(true);
-    const res = await postData(LOGIN_USER, values, true);
-    console.log('Login response:', res);
-    setLoading(false);
+    try {
+      const res = await postData(LOGIN_USER, {
+        email: values.email,
+        password: values.password
+      }, true);
+
+      console.log("res", res);
+
+      if (res && res.data?.access) {
+        // Store tokens
+        setAuthToken(res.data.access, res.data.refresh);
+
+        // Show success message
+        message.success('Login successful!');
+
+        // Redirect to chat page
+        navigate('/');
+      } else {
+        message.error('Invalid response from server');
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      message.error(errorMessage || 'Login failed. Please try again.');
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,18 +75,22 @@ export default function LoginForm() {
         >
           {/* Email Field */}
           <Form.Item
-            label={<span className="text-gray-700 font-medium">Email Address</span>}
+            label={<span className="text-gray-700 font-medium">Email</span>}
             name="email"
             rules={[
-              { required: true, message: 'Please input your email!' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              {
+                required: true,
+                message: 'Please input your email!',
+              },
+              {
+                type: 'email',
+                message: 'Please enter a valid email!',
+              },
             ]}
-            className="mb-5"
           >
             <Input
-              placeholder="Write"
-              size="large"
-              className="rounded-lg bg-gray-50 border-gray-200 hover:border-purple-400 focus:border-purple-500"
+              placeholder="Enter your email"
+              className="h-12 rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500"
             />
           </Form.Item>
 
@@ -67,47 +98,57 @@ export default function LoginForm() {
           <Form.Item
             label={<span className="text-gray-700 font-medium">Password</span>}
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-            className="mb-5"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+              {
+                min: 6,
+                message: 'Password must be at least 6 characters!',
+              },
+            ]}
           >
             <Input.Password
-              placeholder="Write"
-              size="large"
-              className="rounded-lg bg-gray-50 border-gray-200 hover:border-purple-400 focus:border-purple-500"
+              placeholder="Enter your password"
+              className="h-12 rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500"
             />
           </Form.Item>
 
           {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-between mb-6">
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox className="text-gray-600">
-                <span className="text-sm">Remember me</span>
-              </Checkbox>
+              <Checkbox className="text-gray-600">Remember me</Checkbox>
             </Form.Item>
-            <Link href="#" className="text-sm text-red-500 hover:text-red-600">
-              Forgot Password?
+            <Link
+              to="/forget-password"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            >
+              Forgot password?
             </Link>
           </div>
 
           {/* Submit Button */}
-          <Form.Item className="mb-0">
+          <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
-              size="large"
               loading={loading}
-              className="w-full h-12 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 border-0 rounded-lg text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-full h-12 text-base font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </Form.Item>
         </Form>
 
-        {/* Footer */}
+        {/* Sign Up Link */}
         <div className="text-center mt-6">
-          <Text className="text-gray-500 text-sm">
+          <Text className="text-gray-600">
             Don't have an account?{' '}
-            <Link href="#" className="text-purple-600 hover:text-purple-700 font-semibold">
+            <Link
+              to="/signup"
+              className="text-blue-600 hover:text-blue-800 font-semibold"
+            >
               Sign up
             </Link>
           </Text>
