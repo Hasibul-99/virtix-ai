@@ -1,4 +1,4 @@
-import { DownOutlined, LogoutOutlined, UserOutlined, DashboardOutlined } from '@ant-design/icons';
+import { DashboardOutlined, DownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Space, message } from 'antd';
 import Cookies from 'js-cookie';
 import { Menu, X } from 'lucide-react';
@@ -106,10 +106,10 @@ const Header = () => {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {token ? (
-              <Dropdown 
-                menu={{ 
+              <Dropdown
+                menu={{
                   items,
-                  onClick: handleMenuClick 
+                  onClick: handleMenuClick
                 }}
                 placement="bottomRight"
                 arrow
@@ -117,7 +117,6 @@ const Header = () => {
                 <Button type="text" className="flex items-center">
                   <Space>
                     <UserOutlined />
-                    Account
                     <DownOutlined />
                   </Space>
                 </Button>
