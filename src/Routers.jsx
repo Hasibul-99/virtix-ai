@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AuthLayout from './layouts/AuthLayout.jsx';
+import CreateAgentLayout from './layouts/CreateAgentLayout.jsx';
 import PrivateLayout from './layouts/PrivateLayout.jsx';
 import PublicLayout from './layouts/publicLayout.jsx';
 import ForgetPassword from './pages/auth/ForgetPassword.jsx';
@@ -8,6 +9,7 @@ import Signin from './pages/auth/Signin.jsx';
 import Signup from './pages/auth/Signup.jsx';
 import AgentSettings from './pages/private/AgentSettings.jsx';
 import ChatHistory from './pages/private/ChatHistory.jsx';
+import CreateAgent from './pages/private/CreateAgent.jsx';
 import Customers from './pages/private/Customers.jsx';
 import Dashboard from './pages/private/Dashboard.jsx';
 import ManageFiles from './pages/private/ManageFiles.jsx';
@@ -33,6 +35,9 @@ export default function Routers() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/forget-password' element={<ForgetPassword />} />
           <Route path='/reset-password' element={<ResetPassword />} />
+        </Route>
+        <Route path='/' element={<CreateAgentLayout />}>
+          <Route path='/create-agent' element={<CreateAgent />} />
         </Route>
         <Route path='/:id/dashboard' element={<PrivateLayout />}>
           <Route path='/:id/dashboard' element={<Dashboard />} />
