@@ -8,23 +8,24 @@ import {
 import { Avatar, Button, Dropdown, Layout, Menu, message, theme } from 'antd';
 import Cookies from 'js-cookie';
 import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, SquareChartGantt, Users } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import { logoutUser } from '../scripts/api-service';
 const { Header, Content, Sider } = Layout;
 
 export default function PrivateLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const { id } = useParams();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const token = Cookies.get('kotha_token')
 
-  useEffect(() => {
-    if (!token) {
-      window.location = '/'
-    }
-  }, [token])
+  // useEffect(() => {
+  //   if (!token) {
+  //     window.location = '/'
+  //   }
+  // }, [token])
 
   const handleLogout = async () => {
     try {
@@ -105,13 +106,13 @@ export default function PrivateLayout() {
             defaultOpenKeys={['sub1']}
             style={{ height: '100%', borderInlineEnd: 0 }}
             items={[
-              { key: '1', icon: <LayoutDashboard />, label: <Link to={'/dashboard'}>Dashboard</Link> },
-              { key: '2', icon: <MessageCircleReply />, label: <Link to={'/dashboard/chat-history'}>Chat History</Link> },
-              { key: '3', icon: <SquareChartGantt />, label: <Link to={'/dashboard/manage-prompts'}>Manage Prompts</Link> },
-              { key: '4', icon: <Files />, label: <Link to={'/dashboard/manage-files'}>Manage Data Files</Link> },
-              { key: '5', icon: <Users />, label: <Link to={'/dashboard/customers'}>Customers</Link> },
-              { key: '6', icon: <Settings />, label: <Link to={'/dashboard/agent-settings'}>Agent Settings</Link> },
-              { key: '7', icon: <ClipboardMinus />, label: <Link to={'/dashboard'}>Reports</Link> },
+              { key: '1', icon: <LayoutDashboard />, label: <Link to={`/${id}/dashboard`}>Dashboard</Link> },
+              { key: '2', icon: <MessageCircleReply />, label: <Link to={`/${id}/dashboard/chat-history`}>Chat History</Link> },
+              { key: '3', icon: <SquareChartGantt />, label: <Link to={`/${id}/dashboard/manage-prompts`}>Manage Prompts</Link> },
+              { key: '4', icon: <Files />, label: <Link to={`/${id}/dashboard/manage-files`}>Manage Data Files</Link> },
+              { key: '5', icon: <Users />, label: <Link to={`/${id}/dashboard/customers`}>Customers</Link> },
+              { key: '6', icon: <Settings />, label: <Link to={`/${id}/dashboard/agent-settings`}>Agent Settings</Link> },
+              { key: '7', icon: <ClipboardMinus />, label: <Link to={`/${id}/dashboard`}>Reports</Link> },
             ]}
           />
         </Sider>

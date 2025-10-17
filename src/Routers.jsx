@@ -34,13 +34,13 @@ export default function Routers() {
           <Route path='/forget-password' element={<ForgetPassword />} />
           <Route path='/reset-password' element={<ResetPassword />} />
         </Route>
-        <Route path='/dashboard' element={<PrivateLayout />}>
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='chat-history' element={<ChatHistory />} />
-          <Route path='manage-prompts' element={<ManagePrompts />} />
-          <Route path='manage-files' element={<ManageFiles />} />
-          <Route path='customers' element={<Customers />} />
-          <Route path='agent-settings' element={<AgentSettings />} />
+        <Route path='/:id/dashboard' element={<PrivateLayout />}>
+          <Route path='/:id/dashboard' element={<Dashboard />} />
+          <Route path='/:id/dashboard/chat-history' element={<ChatHistory />} />
+          <Route path='/:id/dashboard/manage-prompts' element={<ManagePrompts />} />
+          <Route path='/:id/dashboard/manage-files' element={<ManageFiles />} />
+          <Route path='/:id/dashboard/customers' element={<Customers />} />
+          <Route path='/:id/dashboard/agent-settings' element={<AgentSettings />} />
         </Route>
       </Routes>
     </BrowserRouter>
