@@ -62,13 +62,15 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 bg-white shadow-sm border-b border-[#ECECEC] z-50 rounded-3xl">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-4"><div className="flex-shrink-0">
-            <img
-              src="/assets/logo/Logo.png"
-              alt="VIRTIS AI"
-              className="h-8 w-auto"
-            />
-          </div></Link>
+          <Link to="/" className="flex items-center space-x-4">
+            <div className="flex-shrink-0">
+              <img
+                src="/assets/logo/Logo.png"
+                alt="VIRTIS AI"
+                className="h-8 w-auto"
+              />
+            </div>
+          </Link>
 
 
           {/* Desktop Navigation */}

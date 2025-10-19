@@ -21,11 +21,11 @@ export default function PrivateLayout() {
   } = theme.useToken();
   const token = Cookies.get('kotha_token')
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     window.location = '/'
-  //   }
-  // }, [token])
+  useEffect(() => {
+    if (!token) {
+      window.location = '/'
+    }
+  }, [token])
 
   const handleLogout = async () => {
     try {
