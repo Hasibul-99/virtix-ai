@@ -44,9 +44,12 @@ export default function PrivateLayout() {
       label: 'Profile',
     },
     {
-      key: 'settings',
+      key: 'create-agent',
       icon: <SettingOutlined />,
-      label: 'Settings',
+      label: 'Create Agent',
+      onClick: () => {
+        window.location = `/create-agent`
+      }
     },
     {
       type: 'divider',

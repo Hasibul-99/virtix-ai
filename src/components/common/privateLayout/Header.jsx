@@ -1,4 +1,4 @@
-import { DashboardOutlined, DownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { DownOutlined, LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Space, message } from 'antd';
 import Cookies from 'js-cookie';
 import { Menu, X } from 'lucide-react';
@@ -38,9 +38,12 @@ const Header = () => {
       label: 'Profile',
     },
     {
-      key: 'dashboard',
-      icon: <DashboardOutlined />,
-      label: 'Dashboard',
+      key: 'create-agent',
+      icon: <SettingOutlined />,
+      label: 'Create Agent',
+      onClick: () => {
+        window.location = `/create-agent`
+      }
     },
     {
       type: 'divider',
