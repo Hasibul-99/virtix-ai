@@ -1,15 +1,16 @@
 
 import {
-  ArrowLeftOutlined,
   LogoutOutlined,
   SettingOutlined,
   UploadOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Divider, Dropdown, Form, Input, Layout, message, Modal, Select, theme, Typography, Upload } from 'antd';
+import { Avatar, Button, Dropdown, Form, Input, Layout, message, Modal, theme, Typography, Upload } from 'antd';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { CREATE_AGENT } from '../scripts/api';
+import { postData } from '../scripts/api-service';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -23,14 +24,8 @@ export default function CreateAgentLayout() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
   const token = Cookies.get('kotha_token');
 
-  useEffect(() => {
-    if (!token) {
-      window.location = '/'
-    }
-  }, [token])
 
   const handleLogout = async () => {
     try {
@@ -43,52 +38,6 @@ export default function CreateAgentLayout() {
       message.error('Logout failed. Please try again.');
     }
   };
-
-  const handleModalClose = () => {
-    setOpen(false);
-    setCurrentStep(1);
-    form.resetFields();
-  };
-
-  const handleNext = () => {
-    form.validateFields().then(() => {
-      setCurrentStep(2);
-    }).catch(() => {
-      message.error('Please fill in all required fields');
-    });
-  };
-
-  const handleBack = () => {
-    setCurrentStep(1);
-  };
-
-  const handleCreate = () => {
-    form.validateFields().then((values) => {
-      console.log('Form values:', values);
-      message.success('Agent created successfully!');
-      handleModalClose();
-    }).catch(() => {
-      message.error('Please fill in all required fields');
-    });
-  };
-
-  const uploadProps = {
-    name: 'file',
-    multiple: false,
-    beforeUpload: (file) => {
-      const isValidType = file.type === 'application/pdf' ||
-        file.type === 'application/msword' ||
-        file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      if (!isValidType) {
-        message.error('You can only upload PDF, DOC, or DOCX files!');
-      }
-      return false; // Prevent auto upload
-    },
-    onChange: (info) => {
-      console.log('File info:', info);
-    }
-  };
-
   const userMenuItems = [
     {
       key: 'profile',
@@ -110,6 +59,81 @@ export default function CreateAgentLayout() {
       onClick: handleLogout,
     },
   ];
+
+  const handleModalClose = () => {
+    setOpen(false);
+    setCurrentStep(1);
+    form.resetFields();
+  };
+
+  const handleCreate = async (values) => {
+    try {
+      // Create FormData for multipart form data
+      const formData = new FormData();
+
+      console.log("values", values);
+
+
+      // Append text fields
+      formData.append('agent_name', values.agent_name);
+      formData.append('agent_heading', values.agent_heading);
+      formData.append('agent_description', values.agent_description);
+      formData.append('site_title', values.site_title);
+      formData.append('site_description', values.site_description);
+      formData.append('site_keywords', values.site_keywords);
+
+      // Handle file uploads
+      if (values.logo_light) {
+        formData.append('logo_light', values.logo_light.file);
+      } 
+
+      if (values.logo_dark) {
+        formData.append('logo_dark', values.logo_dark.file);
+      } 
+
+      if (values.thumb) {
+        formData.append('thumb', values.thumb.file);
+      }
+
+      if (values.favicon) {
+        formData.append('favicon', values.favicon.file);
+      } 
+
+      // Make API call using the CREATE_AGENT endpoint
+      const response = await postData(CREATE_AGENT, formData);
+
+      if (response) {
+        message.success('Agent created successfully!');
+        handleModalClose();
+      }
+    } catch (error) {
+      console.error('Error creating agent:', error);
+      message.error('Failed to create agent. Please try again.');
+    }
+  };
+
+
+  const uploadProps = {
+    beforeUpload: (file) => {
+      const isValidType = file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg';
+      if (!isValidType) {
+        message.error('You can only upload PNG, JPG, or JPEG files!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('Image must be smaller than 2MB!');
+      }
+      return false; // Prevent automatic upload
+    },
+    multiple: true,
+  };
+
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/');
+    }
+  }, [token, navigate]);
 
   return (
     <div>
@@ -153,14 +177,6 @@ export default function CreateAgentLayout() {
       <Modal
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {currentStep === 2 && (
-              <Button
-                type="text"
-                icon={<ArrowLeftOutlined />}
-                onClick={handleBack}
-                style={{ padding: '4px' }}
-              />
-            )}
             <span>Create agent</span>
           </div>
         }
@@ -175,166 +191,105 @@ export default function CreateAgentLayout() {
         <Form
           form={form}
           layout="vertical"
-          style={{ marginTop: '16px' }}
+          size="large"
+          onFinish={handleCreate}
         >
-          {currentStep === 1 && (
-            <>
-              {/* Step 2: Agent Configuration */}
-              <Form.Item
-                label="Agent name"
-                name="agentName"
-                rules={[{ required: true, message: 'Please enter agent name' }]}
-              >
-                <Input
-                  placeholder="Write"
-                  size="large"
-                  style={{ borderRadius: '8px' }}
-                />
-              </Form.Item>
+          <Form.Item
+            label="Agent name"
+            name="agent_name"
+            rules={[
+              { required: true, message: 'Please enter agent name!' },
+              { 
+                pattern: /^[a-zA-Z0-9_-]+$/, 
+                message: 'Enter a valid "slug" consisting of letters, numbers, underscores or hyphens.' 
+              }
+            ]}
+          >
+            <Input placeholder="Write" />
+          </Form.Item>
 
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-                <Form.Item
-                  label="LLM Engine"
-                  name="llmEngine"
-                  style={{ flex: 1 }}
-                  rules={[{ required: true, message: 'Please select LLM engine' }]}
-                >
-                  <Select
-                    placeholder="Select"
-                    size="large"
-                    style={{ borderRadius: '8px' }}
-                    options={[
-                      { value: 'gpt-4', label: 'GPT-4' },
-                      { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
-                      { value: 'claude-3', label: 'Claude 3' },
-                      { value: 'gemini-pro', label: 'Gemini Pro' }
-                    ]}
-                  />
-                </Form.Item>
+          <Form.Item
+            label="Agent Heading"
+            name="agent_heading"
+            rules={[{ required: true, message: 'Please enter agent heading!' }]}
+          >
+            <Input placeholder="Write" />
+          </Form.Item>
 
-                <Form.Item
-                  label="Creativity level"
-                  name="creativityLevel"
-                  style={{ flex: 1 }}
-                  rules={[{ required: true, message: 'Please select creativity level' }]}
-                >
-                  <Select
-                    placeholder="Select"
-                    size="large"
-                    style={{ borderRadius: '8px' }}
-                    options={[
-                      { value: 'low', label: 'Low' },
-                      { value: 'medium', label: 'Medium' },
-                      { value: 'high', label: 'High' },
-                      { value: 'very-high', label: 'Very High' }
-                    ]}
-                  />
-                </Form.Item>
-              </div>
+          <Form.Item
+            label="Agent Description"
+            name="agent_description"
+            rules={[{ required: true, message: 'Please enter agent description!' }]}
+          >
+            <TextArea rows={4} placeholder="Write" />
+          </Form.Item>
 
-              <Form.Item
-                label="Agent Bio"
-                name="agentBio"
-                rules={[{ required: true, message: 'Please enter agent bio' }]}
-              >
-                <TextArea
-                  placeholder="Write"
-                  rows={4}
-                  style={{ borderRadius: '8px' }}
-                />
-              </Form.Item>
+          <Form.Item
+            label="Site Title"
+            name="site_title"
+            rules={[{ required: true, message: 'Please enter site title!' }]}
+          >
+            <Input placeholder="Write" />
+          </Form.Item>
 
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '32px'
-              }}>
-                <Button onClick={handleModalClose} size="large">
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={handleNext}
-                  size="large"
-                  style={{
-                    backgroundColor: '#7c3aed',
-                    borderColor: '#7c3aed'
-                  }}
-                >
-                  Next
-                </Button>
-              </div>
-            </>
-          )}
+          <Form.Item
+            label="Site Description"
+            name="site_description"
+            rules={[{ required: true, message: 'Please enter site description!' }]}
+          >
+            <TextArea rows={3} placeholder="Write" />
+          </Form.Item>
 
-          {currentStep === 2 && (
-            <>
-              {/* Step 1: Website URL and File Upload */}
-              <Form.Item
-                label="Enter your website"
-                name="website"
-                rules={[
-                  { required: true, message: 'Please enter your website URL' },
-                  { type: 'url', message: 'Please enter a valid URL' }
-                ]}
-              >
-                <Input
-                  placeholder="yourwebsite.com"
-                  size="large"
-                  style={{ borderRadius: '8px' }}
-                />
-              </Form.Item>
+          <Form.Item
+            label="Site Keywords"
+            name="site_keywords"
+            rules={[{ required: true, message: 'Please enter site keywords!' }]}
+          >
+            <Input placeholder="Write" />
+          </Form.Item>
 
-              <Divider>or</Divider>
+          <Form.Item
+            label="Logo Light"
+            name="logo_light"
+          >
+            <Upload {...uploadProps} listType="picture" maxCount={1}>
+              <Button icon={<UploadOutlined />}>Upload Logo Light</Button>
+            </Upload>
+          </Form.Item>
 
-              <Form.Item label="Upload file">
-                <Upload.Dragger
-                  {...uploadProps}
-                  style={{
-                    borderRadius: '12px',
-                    border: '2px dashed #d9d9d9',
-                    backgroundColor: '#fafafa'
-                  }}
-                >
-                  <div style={{ padding: '40px 20px' }}>
-                    <p style={{ margin: '0 0 8px 0' }}>
-                      <UploadOutlined style={{ fontSize: '24px', color: '#8c8c8c' }} />
-                    </p>
-                    <Title level={4} style={{ margin: '0 0 8px 0', color: '#262626' }}>
-                      Upload file
-                    </Title>
-                    <Text style={{ color: '#8c8c8c' }}>
-                      File supported pdf, docs, and more
-                    </Text>
-                  </div>
-                </Upload.Dragger>
-              </Form.Item>
+          <Form.Item
+            label="Logo Dark"
+            name="logo_dark"
+          >
+            <Upload {...uploadProps} listType="picture" maxCount={1} accept='image/png, image/jpeg, image/jpg'>
+              <Button icon={<UploadOutlined />}>Upload Logo Dark</Button>
+            </Upload>
+          </Form.Item>
 
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                marginTop: '32px'
-              }}>
-                <Button onClick={handleModalClose} size="large">
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={handleCreate}
-                  size="large"
-                  style={{
-                    backgroundColor: '#7c3aed',
-                    borderColor: '#7c3aed'
-                  }}
-                >
-                  Create
-                </Button>
-              </div>
-            </>
-          )}
+          <Form.Item
+            label="Thumbnail"
+            name="thumb"
+          >
+            <Upload {...uploadProps} listType="picture" maxCount={1} accept='image/png, image/jpeg, image/jpg'>
+              <Button icon={<UploadOutlined />}>Upload Thumbnail</Button>
+            </Upload>
+          </Form.Item>
 
+          <Form.Item
+            label="Favicon"
+            name="favicon"
+          >
+            <Upload {...uploadProps} listType="picture" maxCount={1} accept='image/png, image/jpeg, image/jpg'>
+              <Button icon={<UploadOutlined />}>Upload Favicon</Button>
+            </Upload>
+          </Form.Item>
+
+
+          <Form.Item label={null}>
+            <Button type="primary" htmlType="submit" className='w-full'>
+              Submit
+            </Button>
+          </Form.Item>
 
         </Form>
       </Modal>

@@ -6,3 +6,10 @@ export const LOGOUT_USER = 'api/user/logout/'
 export const PASSWORD_RESET = 'api/user/password/reset/'
 export const PASSWORD_RESET_CONFIRM = 'api/user/password/reset/confirm/'
 export const PASSWORD_CHANGE = 'api/user/password/change/'
+
+// Agent API endpoints
+export const CREATE_AGENT = 'api/agent/agents/'
+export const GET_AGENT = 'api/agent/channels/'
+export const GET_AGENTS = 'api/agent/agents/'
+export const UPDATE_AGENT = 'api/agent/agents/'
+export const DELETE_AGENT = 'api/agent/agents/'
