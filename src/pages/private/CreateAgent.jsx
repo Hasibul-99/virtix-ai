@@ -1,31 +1,46 @@
 
-import { useState } from 'react';
-import { 
-  Card, 
-  Button, 
-  Typography, 
-  Row, 
-  Col, 
-  Avatar, 
-  Alert, 
-  Space,
-  Dropdown
-} from 'antd';
-import { 
-  CloseOutlined, 
-  UnorderedListOutlined, 
-  AppstoreOutlined, 
-  UserOutlined,
-  MoreOutlined
+import {
+  AppstoreOutlined,
+  CloseOutlined,
+  MoreOutlined,
+  UnorderedListOutlined,
+  UserOutlined
 } from '@ant-design/icons';
+import {
+  Alert,
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Row,
+  Space,
+  Typography
+} from 'antd';
+import { useEffect, useState } from 'react';
+import { useContentApi } from '../../contexts/ContentApiContext';
 
 const { Title, Text } = Typography;
 
 export default function CreateAgent() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [viewMode, setViewMode] = useState('grid');
+  const {
+    agents,
+    loading,
+    error,
+    fetchAgents,
+    refreshAgents
+  } = useContentApi();
 
-  const agents = [
+  console.log("agents", agents);
+
+  // Fetch agents when component mounts
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+
+  const agentsL = [
     {
       id: 1,
       name: "Agent name",
@@ -84,11 +99,11 @@ export default function CreateAgent() {
 
       {/* All Agents Section */}
       <div style={{ marginBottom: '24px' }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          marginBottom: '24px' 
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '24px'
         }}>
           <Title level={2} style={{ margin: 0, color: '#1f2937' }}>
             All Agents
@@ -109,12 +124,12 @@ export default function CreateAgent() {
 
         {/* Agents Grid */}
         <Row gutter={[24, 24]}>
-          {agents.map((agent) => (
-            <Col 
-              key={agent.id} 
-              xs={24} 
-              sm={12} 
-              lg={8} 
+          {agentsL.map((agent) => (
+            <Col
+              key={agent.id}
+              xs={24}
+              sm={12}
+              lg={8}
               xl={6}
             >
               <Card
@@ -124,8 +139,8 @@ export default function CreateAgent() {
                   border: '1px solid #f0f0f0',
                   height: '100%'
                 }}
-                styles={{ 
-                  body: { 
+                styles={{
+                  body: {
                     padding: '24px',
                     textAlign: 'center',
                     display: 'flex',
@@ -136,9 +151,9 @@ export default function CreateAgent() {
               >
                 {/* Agent Avatar */}
                 <div style={{ marginBottom: '16px' }}>
-                  <Avatar 
-                    size={64} 
-                    icon={<UserOutlined />} 
+                  <Avatar
+                    size={64}
+                    icon={<UserOutlined />}
                     style={{ backgroundColor: '#f5f5f5', color: '#8c8c8c' }}
                   />
                 </div>
@@ -154,13 +169,13 @@ export default function CreateAgent() {
                 </div>
 
                 {/* Action Buttons */}
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'space-between' 
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
                 }}>
-                  <Button 
-                    type="primary" 
+                  <Button
+                    type="primary"
                     style={{
                       backgroundColor: '#7c3aed',
                       borderColor: '#7c3aed',
@@ -180,8 +195,8 @@ export default function CreateAgent() {
                     }}
                     trigger={['click']}
                   >
-                    <Button 
-                      type="text" 
+                    <Button
+                      type="text"
                       icon={<MoreOutlined />}
                       style={{ color: '#8c8c8c' }}
                     />
