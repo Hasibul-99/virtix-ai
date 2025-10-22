@@ -33,51 +33,28 @@ export default function CreateAgent() {
     refreshAgents
   } = useContentApi();
 
-  console.log("agents", agents);
+  const handleMenuClick = (e) => {
+    if (e.key === '3') {
+      setOpen(false);
+    }
+  };
 
   // Fetch agents when component mounts
   useEffect(() => {
     fetchAgents();
   }, []);
 
-  const agentsL = [
-    {
-      id: 1,
-      name: "Agent name",
-      description: "You can ask me something like: \"what's going on today in stock market\".",
-      avatar: null
-    },
-    {
-      id: 2,
-      name: "Agent name",
-      description: "You can ask me something like: \"what's going on today in stock market\".",
-      avatar: null
-    },
-    {
-      id: 3,
-      name: "Agent name",
-      description: "You can ask me something like: \"what's going on today in stock market\".",
-      avatar: null
-    },
-    {
-      id: 4,
-      name: "Agent name",
-      description: "You can ask me something like: \"what's going on today in stock market\".",
-      avatar: null
-    }
-  ];
-
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5', padding: '16px 24px' }}>
+    <div className="min-h-screen bg-gray-100 p-4 md:p-6">
       {/* Welcome Banner */}
       {showWelcome && (
         <Alert
           message={
-            <div style={{ textAlign: 'center' }}>
-              <Title level={2} style={{ margin: '0 0 12px 0', color: '#1f2937' }}>
+            <div className="text-center">
+              <Title level={2} className="!m-0 !mb-3 !text-gray-800">
                 Welcome to VIRTIX AI!
               </Title>
-              <Text style={{ color: '#6b7280', fontSize: '16px' }}>
+              <Text className="text-gray-500 text-base">
                 Your AI agent journey starts here — create, train, and launch
                 intelligent agents for your website in minutes.
               </Text>
@@ -87,25 +64,14 @@ export default function CreateAgent() {
           closable
           closeIcon={<CloseOutlined />}
           onClose={() => setShowWelcome(false)}
-          style={{
-            background: 'linear-gradient(to right, #f3e8ff, #dbeafe)',
-            border: '1px solid #c084fc',
-            borderRadius: '16px',
-            marginBottom: '32px',
-            padding: '24px'
-          }}
+          className="bg-gradient-to-r from-purple-100 to-blue-100 border border-purple-300 rounded-2xl mb-8 p-6"
         />
       )}
 
       {/* All Agents Section */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '24px'
-        }}>
-          <Title level={2} style={{ margin: 0, color: '#1f2937' }}>
+      <div className="my-10 ">
+        <div className="flex items-center justify-between mb-6">
+          <Title level={2} className="!m-0 !text-gray-800">
             All Agents
           </Title>
           <Space>
@@ -123,89 +89,80 @@ export default function CreateAgent() {
         </div>
 
         {/* Agents Grid */}
-        <Row gutter={[24, 24]}>
-          {agentsL.map((agent) => (
-            <Col
-              key={agent.id}
-              xs={24}
-              sm={12}
-              lg={8}
-              xl={6}
-            >
-              <Card
-                hoverable
-                style={{
-                  borderRadius: '16px',
-                  border: '1px solid #f0f0f0',
-                  height: '100%'
-                }}
-                styles={{
-                  body: {
-                    padding: '24px',
-                    textAlign: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%'
-                  }
-                }}
+        {
+          agents?.results?.length ? <Row gutter={[24, 24]}>
+            {agents.results.map((agent) => (
+              <Col
+                key={agent.id}
+                xs={24}
+                sm={12}
+                lg={8}
+                xl={6}
               >
-                {/* Agent Avatar */}
-                <div style={{ marginBottom: '16px' }}>
-                  <Avatar
-                    size={64}
-                    icon={<UserOutlined />}
-                    style={{ backgroundColor: '#f5f5f5', color: '#8c8c8c' }}
-                  />
-                </div>
-
-                {/* Agent Info */}
-                <div style={{ flex: 1, marginBottom: '24px' }}>
-                  <Title level={4} style={{ margin: '0 0 8px 0', color: '#1f2937' }}>
-                    {agent.name}
-                  </Title>
-                  <Text style={{ color: '#6b7280', fontSize: '14px', lineHeight: '1.5' }}>
-                    {agent.description}
-                  </Text>
-                </div>
-
-                {/* Action Buttons */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}>
-                  <Button
-                    type="primary"
-                    style={{
-                      backgroundColor: '#7c3aed',
-                      borderColor: '#7c3aed',
-                      borderRadius: '8px',
-                      fontWeight: 500
-                    }}
-                  >
-                    Try Now
-                  </Button>
-                  <Dropdown
-                    menu={{
-                      items: [
-                        { key: '1', label: 'Edit Agent' },
-                        { key: '2', label: 'Delete Agent' },
-                        { key: '3', label: 'Duplicate Agent' }
-                      ]
-                    }}
-                    trigger={['click']}
-                  >
-                    <Button
-                      type="text"
-                      icon={<MoreOutlined />}
-                      style={{ color: '#8c8c8c' }}
+                <Card
+                  hoverable
+                  className="rounded-2xl border border-gray-200 h-full"
+                  styles={{
+                    body: {
+                      padding: '24px',
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%'
+                    }
+                  }}
+                >
+                  {/* Agent Avatar */}
+                  <div className="mb-4">
+                    <Avatar
+                      size={64}
+                      icon={<UserOutlined />}
+                      className="bg-gray-100 text-gray-400"
                     />
-                  </Dropdown>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+                  </div>
+
+                  {/* Agent Info */}
+                  <div className="flex-1 mb-6">
+                    <Title level={4} className="!m-0 !mb-2 !text-gray-800">
+                      {agent.agent_name}
+                    </Title>
+                    <Text className="text-gray-500 text-sm leading-relaxed">
+                      {agent.agent_description}
+                    </Text>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className='flex items-center justify-between gap-4' >
+                    <Button
+                      type="primary"
+                      className='w-full bg-purple-600 border-purple-600 rounded-lg font-medium hover:bg-purple-700'
+                    >
+                      Try Now
+                    </Button>
+                    <Dropdown
+                      menu={{
+                        items: [
+                          { key: '1', label: 'Edit Agent' },
+                          { key: '2', label: 'Delete Agent' }
+                        ],
+                        onClick: handleMenuClick,
+                      }}
+                      trigger={['click']}
+                    >
+                      <Button
+                        color="default"
+                        variant="filled"
+                        type="text"
+                        icon={<MoreOutlined />}
+                        className="text-gray-400"
+                      />
+                    </Dropdown>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row> : null
+        }
       </div>
     </div>
   );
