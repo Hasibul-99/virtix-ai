@@ -13,3 +13,9 @@ export const GET_AGENT = 'api/agent/agents/'
 export const GET_AGENTS = 'api/agent/agents/'
 export const UPDATE_AGENT = 'api/agent/agents/'
 export const DELETE_AGENT = 'api/agent/agents/'
+
+// Prompts API endpoints
+export const GET_PROMPTS = 'api/agent/prompts/'
+export const CREATE_PROMPT = 'api/agent/prompts/'
+export const UPDATE_PROMPT = 'api/agent/prompts/'
+export const DELETE_PROMPT = 'api/agent/prompts/'

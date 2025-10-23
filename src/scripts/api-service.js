@@ -117,7 +117,6 @@ export const putData = async (query, data, no_token, showError) => {
         ? {}
         : {
           Authorization: `Bearer ${token}`,
-          lang: 'en',
         },
       data: data,
     })
