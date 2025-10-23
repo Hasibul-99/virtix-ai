@@ -8,7 +8,7 @@ import {
 import { Avatar, Button, Dropdown, Layout, Menu, message, theme } from 'antd';
 import Cookies from 'js-cookie';
 import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, SquareChartGantt, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import { logoutUser } from '../scripts/api-service';
 const { Header, Content, Sider } = Layout;

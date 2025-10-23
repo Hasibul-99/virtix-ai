@@ -9,6 +9,7 @@ import { Avatar, Button, Dropdown, Form, Input, Layout, message, Modal, theme, T
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useContentApi } from '../contexts/ContentApiContext';
 import { CREATE_AGENT } from '../scripts/api';
 import { postData } from '../scripts/api-service';
 
@@ -21,6 +22,7 @@ export default function CreateAgentLayout() {
   const [currentStep, setCurrentStep] = useState(1);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { refreshAgents } = useContentApi();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -70,10 +72,6 @@ export default function CreateAgentLayout() {
     try {
       // Create FormData for multipart form data
       const formData = new FormData();
-
-      console.log("values", values);
-
-
       // Append text fields
       formData.append('agent_name', values.agent_name);
       formData.append('agent_heading', values.agent_heading);
@@ -85,11 +83,11 @@ export default function CreateAgentLayout() {
       // Handle file uploads
       if (values.logo_light) {
         formData.append('logo_light', values.logo_light.file);
-      } 
+      }
 
       if (values.logo_dark) {
         formData.append('logo_dark', values.logo_dark.file);
-      } 
+      }
 
       if (values.thumb) {
         formData.append('thumb', values.thumb.file);
@@ -97,13 +95,18 @@ export default function CreateAgentLayout() {
 
       if (values.favicon) {
         formData.append('favicon', values.favicon.file);
-      } 
+      }
 
       // Make API call using the CREATE_AGENT endpoint
       const response = await postData(CREATE_AGENT, formData);
 
       if (response) {
+        if (response.error) {
+          message.error('Agent created failed!');
+          return;
+        }
         message.success('Agent created successfully!');
+        refreshAgents(); // Refresh agents list from context
         handleModalClose();
       }
     } catch (error) {
@@ -141,7 +144,7 @@ export default function CreateAgentLayout() {
         <Link to="/" className="flex items-center space-x-4">
           <div className="flex-shrink-0">
             <img
-              src="/assets/logo/Logo.png"
+              src="/assets/logo/Logo.svg"
               alt="VIRTIS AI"
               className="h-8 w-auto"
             />
@@ -199,9 +202,9 @@ export default function CreateAgentLayout() {
             name="agent_name"
             rules={[
               { required: true, message: 'Please enter agent name!' },
-              { 
-                pattern: /^[a-zA-Z0-9_-]+$/, 
-                message: 'Enter a valid "slug" consisting of letters, numbers, underscores or hyphens.' 
+              {
+                pattern: /^[a-zA-Z0-9_-]+$/,
+                message: 'Enter a valid "slug" consisting of letters, numbers, underscores or hyphens.'
               }
             ]}
           >

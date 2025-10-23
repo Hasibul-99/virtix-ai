@@ -68,7 +68,7 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-4">
             <div className="flex-shrink-0">
               <img
-                src="/assets/logo/Logo.png"
+                src="/assets/logo/Logo.svg"
                 alt="VIRTIS AI"
                 className="h-8 w-auto"
               />

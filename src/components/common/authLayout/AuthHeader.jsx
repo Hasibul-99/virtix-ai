@@ -11,7 +11,7 @@ export default function AuthHeader() {
             <div className="flex-shrink-0">
               <Link to="/">
                 <img
-                  src="/assets/logo/Logo.png"
+                  src="/assets/logo/Logo.svg"
                   alt="VIRTIS AI"
                   className="h-8 w-auto"
                 />
