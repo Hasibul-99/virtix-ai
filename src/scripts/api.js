@@ -19,3 +19,9 @@ export const GET_PROMPTS = 'api/agent/prompts/'
 export const CREATE_PROMPT = 'api/agent/prompts/'
 export const UPDATE_PROMPT = 'api/agent/prompts/'
 export const DELETE_PROMPT = 'api/agent/prompts/'
+
+// Files API endpoints
+export const GET_FILES = 'api/agent/files/'
+export const CREATE_FILE = 'api/agent/files/'
+export const UPDATE_FILE = 'api/agent/files/'
+export const DELETE_FILE = 'api/agent/files/'
