@@ -28,3 +28,4 @@ export const DELETE_FILE = 'api/agent/files/'
 
 // Billing API endpoints
 export const GET_BILLING_PLANS = 'api/billing/plans/'
+export const START_SUBSCRIPTION = 'api/billing/me/subscription/start/'

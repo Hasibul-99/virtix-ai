@@ -1,13 +1,17 @@
-import { Button } from 'antd';
+import { Button, message } from 'antd';
+import Cookies from 'js-cookie';
 import { Check, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { GET_BILLING_PLANS } from '../../../scripts/api';
-import { getData } from '../../../scripts/api-service';
+import { useNavigate } from 'react-router-dom';
+import { GET_BILLING_PLANS, START_SUBSCRIPTION } from '../../../scripts/api';
+import { getData, postData } from '../../../scripts/api-service';
 
 const Pricing = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch billing plans from API
   useEffect(() => {
@@ -90,6 +94,45 @@ const Pricing = () => {
     return 'Start Free Trial';
   };
 
+  // Handle plan selection with authentication check
+  const handlePlanSelection = async (plan) => {
+    const token = Cookies.get('kotha_token');
+
+    // Check if user is authenticated
+    if (!token) {
+      // Redirect to login page for unauthenticated users
+      navigate('/signin');
+      return;
+    }
+
+    // For contact sales plans, handle differently
+    if (plan.contact_sales_only) {
+      // You can add contact sales logic here
+      message.info('Please contact our sales team for enterprise plans.');
+      return;
+    }
+
+    // For paid plans, call the subscription API
+    try {
+      setSubscriptionLoading(plan.id);
+
+      const response = await postData(START_SUBSCRIPTION, {
+        plan_code: plan.code
+      });
+
+      if (response) {
+        message.success(`Successfully subscribed to ${plan.name} plan!`);
+        // You might want to redirect to dashboard or payment confirmation
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      message.error('Failed to start subscription. Please try again.');
+    } finally {
+      setSubscriptionLoading(null);
+    }
+  };
+
   if (loading) {
     return (
       <section className="pricing py-20">
@@ -151,8 +194,8 @@ const Pricing = () => {
             <div
               key={plan.id || index}
               className={`relative rounded-[20px] p-8 transition-all duration-300 hover:shadow-lg ${isPopular(plan)
-                  ? 'bg-[#F4EDFF] border-2 border-[#6200FF] transform scale-105'
-                  : 'bg-[linear-gradient(172.42deg,#FFFFFF_4.56%,#E7D7FF_50.03%,#FFFFFF_95.51%)] border border-[#ECECEC]'
+                ? 'bg-[#F4EDFF] border-2 border-[#6200FF] transform scale-105'
+                : 'bg-[linear-gradient(172.42deg,#FFFFFF_4.56%,#E7D7FF_50.03%,#FFFFFF_95.51%)] border border-[#ECECEC]'
                 }`}
             >
               {isPopular(plan) && (
@@ -184,12 +227,14 @@ const Pricing = () => {
                 <Button
                   type="primary"
                   size="large"
+                  loading={subscriptionLoading === plan.id}
+                  onClick={() => handlePlanSelection(plan)}
                   className={`w-full h-12 font-semibold ${isPopular(plan)
-                      ? 'bg-[#6200FF] border-[#6200FF] hover:bg-[#5000CC]'
-                      : ''
+                    ? 'bg-[#6200FF] border-[#6200FF] hover:bg-[#5000CC]'
+                    : ''
                     }`}
                 >
-                  {getButtonText(plan)}
+                  {subscriptionLoading === plan.id ? 'Processing...' : getButtonText(plan)}
                 </Button>
 
                 {/* Features List */}
