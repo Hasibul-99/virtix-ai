@@ -1,8 +1,8 @@
 import { Button } from 'antd';
 import { Check, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { getData } from '../../../scripts/api-service';
+import { useEffect, useState } from 'react';
 import { GET_BILLING_PLANS } from '../../../scripts/api';
+import { getData } from '../../../scripts/api-service';
 
 const Pricing = () => {
   const [plans, setPlans] = useState([]);
@@ -20,7 +20,7 @@ const Pricing = () => {
         console.error('Error fetching billing plans:', error);
         setError('Failed to load pricing plans');
         // Fallback to default plans if API fails
-        setPlans(getDefaultPlans());
+        setPlans([]);
       } finally {
         setLoading(false);
       }
@@ -90,63 +90,6 @@ const Pricing = () => {
     return 'Start Free Trial';
   };
 
-  // Default plans as fallback
-  const getDefaultPlans = () => [
-    {
-      name: "Starter",
-      price: "$0",
-      period: "/Month",
-      description: "Perfect for getting started",
-      features: [
-        "Up to 100 conversations/month",
-        "Basic AI responses",
-        "Email support",
-        "Standard integrations",
-        "Basic analytics",
-        "Community access"
-      ],
-      buttonText: "Get Started",
-      popular: false
-    },
-    {
-      name: "Professional",
-      price: "$9.76 USD",
-      period: "/Month",
-      description: "Best for growing businesses",
-      features: [
-        "Up to 1,000 conversations/month",
-        "Advanced AI capabilities",
-        "Priority support",
-        "Custom integrations",
-        "Advanced analytics",
-        "Team collaboration",
-        "Custom branding",
-        "API access"
-      ],
-      buttonText: "Start Free Trial",
-      popular: true
-    },
-    {
-      name: "Enterprise",
-      price: "$99.76 USD",
-      period: "/Month",
-      description: "For large-scale operations",
-      features: [
-        "Unlimited conversations",
-        "Custom AI training",
-        "Dedicated support",
-        "Enterprise integrations",
-        "Advanced reporting",
-        "Multi-team management",
-        "White-label solution",
-        "SLA guarantee",
-        "Custom deployment"
-      ],
-      buttonText: "Contact Sales",
-      popular: false
-    }
-  ];
-
   if (loading) {
     return (
       <section className="pricing py-20">
@@ -205,13 +148,12 @@ const Pricing = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
           {plans.map((plan, index) => (
-            <div 
-              key={plan.id || index} 
-              className={`relative rounded-[20px] p-8 transition-all duration-300 hover:shadow-lg ${
-                isPopular(plan) 
-                  ? 'bg-[#F4EDFF] border-2 border-[#6200FF] transform scale-105' 
+            <div
+              key={plan.id || index}
+              className={`relative rounded-[20px] p-8 transition-all duration-300 hover:shadow-lg ${isPopular(plan)
+                  ? 'bg-[#F4EDFF] border-2 border-[#6200FF] transform scale-105'
                   : 'bg-[linear-gradient(172.42deg,#FFFFFF_4.56%,#E7D7FF_50.03%,#FFFFFF_95.51%)] border border-[#ECECEC]'
-              }`}
+                }`}
             >
               {isPopular(plan) && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -220,7 +162,7 @@ const Pricing = () => {
                   </span>
                 </div>
               )}
-              
+
               <div className="space-y-6">
                 {/* Plan Header */}
                 <div className="text-center space-y-2">
@@ -239,14 +181,13 @@ const Pricing = () => {
                 </div>
 
                 {/* CTA Button */}
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   size="large"
-                  className={`w-full h-12 font-semibold ${
-                    isPopular(plan) 
-                      ? 'bg-[#6200FF] border-[#6200FF] hover:bg-[#5000CC]' 
+                  className={`w-full h-12 font-semibold ${isPopular(plan)
+                      ? 'bg-[#6200FF] border-[#6200FF] hover:bg-[#5000CC]'
                       : ''
-                  }`}
+                    }`}
                 >
                   {getButtonText(plan)}
                 </Button>
@@ -268,9 +209,8 @@ const Pricing = () => {
                           ) : (
                             <X size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                           )}
-                          <span className={`text-sm leading-relaxed ${
-                            feature.included ? 'text-[#0C0900]' : 'text-gray-400'
-                          }`}>
+                          <span className={`text-sm leading-relaxed ${feature.included ? 'text-[#0C0900]' : 'text-gray-400'
+                            }`}>
                             {feature.text}
                           </span>
                         </>
