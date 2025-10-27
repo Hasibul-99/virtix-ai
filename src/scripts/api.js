@@ -25,3 +25,6 @@ export const GET_FILES = 'api/agent/files/'
 export const CREATE_FILE = 'api/agent/files/'
 export const UPDATE_FILE = 'api/agent/files/'
 export const DELETE_FILE = 'api/agent/files/'
+
+// Billing API endpoints
+export const GET_BILLING_PLANS = 'api/billing/plans/'
