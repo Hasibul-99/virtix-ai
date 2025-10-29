@@ -7,6 +7,11 @@ export const PASSWORD_RESET = 'api/user/password/reset/'
 export const PASSWORD_RESET_CONFIRM = 'api/user/password/reset/confirm/'
 export const PASSWORD_CHANGE = 'api/user/password/change/'
 
+// User Profile API endpoints
+export const GET_USER_PROFILE = 'api/user/profile/'
+export const UPDATE_USER_PROFILE = 'api/user/profile/'
+export const UPDATE_PROFILE_PHOTO = 'api/user/profile-photo/'
+
 // Agent API endpoints
 export const CREATE_AGENT = 'api/agent/agents/'
 export const GET_AGENT = 'api/agent/agents/'

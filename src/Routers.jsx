@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import UserProfile from './components/pages/profile/UserProfile.jsx';
 import AuthLayout from './layouts/AuthLayout.jsx';
 import CreateAgentLayout from './layouts/CreateAgentLayout.jsx';
 import PrivateLayout from './layouts/PrivateLayout.jsx';
@@ -38,6 +39,7 @@ export default function Routers() {
         </Route>
         <Route path='/' element={<CreateAgentLayout />}>
           <Route path='/create-agent' element={<CreateAgent />} />
+          <Route path='/profile' element={<UserProfile />} />
         </Route>
         <Route path='/:id/dashboard' element={<PrivateLayout />}>
           <Route path='/:id/dashboard' element={<Dashboard />} />
