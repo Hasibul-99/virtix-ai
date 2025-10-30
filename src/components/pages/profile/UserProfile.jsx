@@ -1,4 +1,4 @@
-import { UserOutlined } from '@ant-design/icons';
+import { CameraOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Button,
@@ -13,12 +13,14 @@ import {
   Select,
   Spin,
   Switch,
-  Typography
+  Typography,
+  Upload
 } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { GET_USER_PROFILE, UPDATE_USER_PROFILE } from '../../../scripts/api';
+import { GET_USER_PROFILE, UPDATE_PROFILE_PHOTO, UPDATE_USER_PROFILE } from '../../../scripts/api';
 import { getData, putData } from '../../../scripts/api-service';
+import { getAuthToken } from '../../../scripts/helper';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -27,6 +29,7 @@ const UserProfile = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [profileData, setProfileData] = useState(null);
 
   // Fetch user profile data
@@ -34,8 +37,6 @@ const UserProfile = () => {
     try {
       setLoading(true);
       const response = await getData(GET_USER_PROFILE);
-
-      console.log("response", response);
 
       if (response) {
         const data = response;
@@ -56,7 +57,7 @@ const UserProfile = () => {
           theme: data.theme || 'light',
           language: data.language || 'en',
           voice: data.voice || 'en',
-          subscribe_to_notification: data.subscribe_to_notification === 'True' || data.subscribe_to_notification === true
+          subscribe_to_notification: data.subscribe_to_notification === true || data.subscribe_to_notification === 'True'
         });
       }
     } catch (error) {
@@ -104,6 +105,69 @@ const UserProfile = () => {
     }
   };
 
+  // Handle profile photo upload
+  const handlePhotoUpload = async (file) => {
+    // Validate file type
+    const isImage = file.type.startsWith('image/');
+    if (!isImage) {
+      message.error('You can only upload image files!');
+      return false;
+    }
+
+    // Validate file size (max 5MB)
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Image must be smaller than 5MB!');
+      return false;
+    }
+
+    try {
+      setUploadingPhoto(true);
+
+      const formData = new FormData();
+      formData.append('photo', file);
+
+      const token = getAuthToken();
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.virtixai.com/';
+      const url = `${baseUrl}${UPDATE_PROFILE_PHOTO}`;
+
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        message.success('Profile photo updated successfully!');
+        // Refresh profile data to get the new photo URL
+        await fetchProfileData();
+      } else {
+        throw new Error('Failed to upload photo');
+      }
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      message.error('Failed to upload profile photo');
+    } finally {
+      setUploadingPhoto(false);
+    }
+
+    // Return false to prevent default upload behavior
+    return false;
+  };
+
+  // Get profile image URL
+  const getProfileImageUrl = () => {
+    if (profileData?.photo) {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.virtixai.com/';
+      // Remove leading slash if present to avoid double slashes
+      const photoPath = profileData.photo.startsWith('/') ? profileData.photo.slice(1) : profileData.photo;
+      return `${baseUrl}${photoPath}`;
+    }
+    return null;
+  };
+
   useEffect(() => {
     fetchProfileData();
   }, []);
@@ -120,7 +184,34 @@ const UserProfile = () => {
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
       <Card>
         <div style={{ marginBottom: '24px', textAlign: 'center' }}>
-          <Avatar size={80} icon={<UserOutlined />} style={{ marginBottom: '16px' }} />
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <Avatar
+              size={80}
+              src={getProfileImageUrl()}
+              icon={!getProfileImageUrl() ? <UserOutlined /> : null}
+              style={{ marginBottom: '16px' }}
+            />
+            <Upload
+              beforeUpload={handlePhotoUpload}
+              showUploadList={false}
+              accept="image/*"
+            >
+              <Button
+                type="primary"
+                shape="circle"
+                size="small"
+                icon={<CameraOutlined />}
+                loading={uploadingPhoto}
+                style={{
+                  position: 'absolute',
+                  bottom: '16px',
+                  right: '-8px',
+                  border: '2px solid white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                }}
+              />
+            </Upload>
+          </div>
           <Title level={2} style={{ margin: 0 }}>
             {profileData?.first_name} {profileData?.last_name}
           </Title>

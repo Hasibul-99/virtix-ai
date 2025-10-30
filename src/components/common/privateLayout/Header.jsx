@@ -1,13 +1,15 @@
 import { DownOutlined, LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Space, message } from 'antd';
+import { Avatar, Button, Dropdown, Space, message } from 'antd';
 import Cookies from 'js-cookie';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../../../contexts/UserContext';
 import { logoutUser } from '../../../scripts/api-service';
 
 const Header = () => {
   const token = Cookies.get('kotha_token')
+  const { user, isAuthenticated, clearUser } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -15,6 +17,7 @@ const Header = () => {
     try {
       message.loading('Logging out...', 0.5);
       await logoutUser();
+      clearUser(); // Clear user context on logout
     } catch (error) {
       console.error('Logout error:', error);
       message.error('Logout failed. Please try again.');
@@ -36,6 +39,9 @@ const Header = () => {
       key: 'profile',
       icon: <UserOutlined />,
       label: 'Profile',
+      onClick: () => {
+        window.location = `/profile`
+      }
     },
     {
       key: 'create-agent',
@@ -119,9 +125,15 @@ const Header = () => {
                 placement="bottomRight"
                 arrow
               >
+                {console.log("user", user)
+                }
                 <Button type="text" className="flex items-center">
                   <Space>
-                    <UserOutlined />
+                    <Avatar
+                      size={24}
+                      src={user?.profileImageUrl}
+                      icon={!user?.profileImageUrl ? <UserOutlined /> : null}
+                    />
                     <DownOutlined />
                   </Space>
                 </Button>
