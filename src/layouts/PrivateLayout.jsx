@@ -1,16 +1,13 @@
 import {
   LeftOutlined,
-  LogoutOutlined,
-  RightOutlined,
-  SettingOutlined,
-  UserOutlined
+  RightOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Dropdown, Layout, Menu, message, theme } from 'antd';
+import { Button, Layout, Menu, theme } from 'antd';
 import Cookies from 'js-cookie';
 import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, SquareChartGantt, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
-import { logoutUser } from '../scripts/api-service';
+import UserMenu from '../components/common/privateLayout/UserMenu';
 const { Header, Content, Sider } = Layout;
 
 export default function PrivateLayout() {
@@ -27,40 +24,6 @@ export default function PrivateLayout() {
     }
   }, [token])
 
-  const handleLogout = async () => {
-    try {
-      message.loading('Logging out...', 0.5);
-      await logoutUser();
-    } catch (error) {
-      console.error('Logout error:', error);
-      message.error('Logout failed. Please try again.');
-    }
-  };
-
-  const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: 'Profile',
-    },
-    {
-      key: 'create-agent',
-      icon: <SettingOutlined />,
-      label: 'Create Agent',
-      onClick: () => {
-        window.location = `/create-agent`
-      }
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: 'Logout',
-      onClick: handleLogout,
-    },
-  ];
 
   return (
     <Layout>
@@ -78,26 +41,7 @@ export default function PrivateLayout() {
         <div className="demo-logo font-semibold text-2xl" >Agent name</div>
 
         <div className='ml-auto'>
-          <Dropdown
-            menu={{
-              items: userMenuItems,
-              onClick: ({ key }) => {
-                const item = userMenuItems.find(item => item.key === key);
-                if (item && item.onClick) {
-                  item.onClick();
-                }
-              }
-            }}
-            placement="bottomRight"
-            arrow
-          >
-            <Avatar
-              size="large"
-              shape="square"
-              icon={<UserOutlined />}
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
-            />
-          </Dropdown>
+          <UserMenu />
         </div>
       </Header>
       <Layout>

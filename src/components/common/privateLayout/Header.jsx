@@ -1,66 +1,13 @@
-import { DownOutlined, LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Dropdown, Space, message } from 'antd';
+import { Button } from 'antd';
 import Cookies from 'js-cookie';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../../../contexts/UserContext';
-import { logoutUser } from '../../../scripts/api-service';
+import { Link } from 'react-router-dom';
+import UserMenu from './UserMenu';
 
 const Header = () => {
   const token = Cookies.get('kotha_token')
-  const { user, isAuthenticated, clearUser } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      message.loading('Logging out...', 0.5);
-      await logoutUser();
-      clearUser(); // Clear user context on logout
-    } catch (error) {
-      console.error('Logout error:', error);
-      message.error('Logout failed. Please try again.');
-    }
-  };
-
-  const handleMenuClick = ({ key }) => {
-    if (key === 'logout') {
-      handleLogout();
-    } else if (key === 'profile') {
-      navigate('/profile');
-    } else if (key === 'dashboard') {
-      navigate('/dashboard');
-    }
-  };
-
-  const items = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: 'Profile',
-      onClick: () => {
-        window.location = `/profile`
-      }
-    },
-    {
-      key: 'create-agent',
-      icon: <SettingOutlined />,
-      label: 'Create Agent',
-      onClick: () => {
-        window.location = `/create-agent`
-      }
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: 'Logout',
-      danger: true,
-    },
-  ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -117,27 +64,7 @@ const Header = () => {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             {token ? (
-              <Dropdown
-                menu={{
-                  items,
-                  onClick: handleMenuClick
-                }}
-                placement="bottomRight"
-                arrow
-              >
-                {console.log("user", user)
-                }
-                <Button type="text" className="flex items-center">
-                  <Space>
-                    <Avatar
-                      size={24}
-                      src={user?.profileImageUrl}
-                      icon={!user?.profileImageUrl ? <UserOutlined /> : null}
-                    />
-                    <DownOutlined />
-                  </Space>
-                </Button>
-              </Dropdown>
+              <UserMenu />
             ) : (
               <>
                 <Link to="/signin" >

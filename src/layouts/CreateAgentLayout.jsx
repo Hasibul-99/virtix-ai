@@ -1,14 +1,12 @@
 
 import {
-  LogoutOutlined,
-  SettingOutlined,
-  UploadOutlined,
-  UserOutlined
+  UploadOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Dropdown, Form, Input, Layout, message, Modal, theme, Typography, Upload } from 'antd';
+import { Button, Form, Input, Layout, message, Modal, theme, Typography, Upload } from 'antd';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import UserMenu from '../components/common/privateLayout/UserMenu';
 import { useContentApi } from '../contexts/ContentApiContext';
 import { CREATE_AGENT } from '../scripts/api';
 import { postData } from '../scripts/api-service';
@@ -28,39 +26,6 @@ export default function CreateAgentLayout() {
   } = theme.useToken();
   const token = Cookies.get('kotha_token');
 
-
-  const handleLogout = async () => {
-    try {
-      message.loading('Logging out...', 0.5);
-      // Add your logout logic here
-      // await logoutUser();
-      navigate('/signin');
-    } catch (error) {
-      console.error('Logout error:', error);
-      message.error('Logout failed. Please try again.');
-    }
-  };
-  const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: 'Profile',
-    },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: 'Settings',
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: 'Logout',
-      onClick: handleLogout,
-    },
-  ];
 
   const handleModalClose = () => {
     setOpen(false);
@@ -153,26 +118,7 @@ export default function CreateAgentLayout() {
 
         <div className='ml-auto space-x-4'>
           <Button type="primary" onClick={() => { setOpen(true) }}>Create Agent</Button>
-          <Dropdown
-            menu={{
-              items: userMenuItems,
-              onClick: ({ key }) => {
-                const item = userMenuItems.find(item => item.key === key);
-                if (item && item.onClick) {
-                  item.onClick();
-                }
-              }
-            }}
-            placement="bottomRight"
-            arrow
-          >
-            <Avatar
-              size="large"
-              shape="square"
-              icon={<UserOutlined />}
-              className="cursor-pointer hover:bg-gray-100 transition-colors"
-            />
-          </Dropdown>
+          <UserMenu />
         </div>
       </Header>
       <Outlet />
