@@ -15,6 +15,7 @@ export const UPDATE_PROFILE_PHOTO = 'api/user/profile-photo/'
 // Agent API endpoints
 export const CREATE_AGENT = 'api/agent/agents/'
 export const GET_AGENT = 'api/agent/agents/'
+export const GET_AGENT_BY_ID = 'api/agent/agents/' // For getting specific agent by ID
 export const GET_AGENTS = 'api/agent/agents/'
 export const UPDATE_AGENT = 'api/agent/agents/'
 export const DELETE_AGENT = 'api/agent/agents/'

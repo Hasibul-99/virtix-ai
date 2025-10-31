@@ -8,21 +8,41 @@ import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, S
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import UserMenu from '../components/common/privateLayout/UserMenu';
+import { getAgentById } from '../scripts/api-service';
 const { Header, Content, Sider } = Layout;
 
 export default function PrivateLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [agent, setAgent] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const token = Cookies.get('kotha_token')
 
+  // Fetch agent data by ID using api-service
+  const fetchAgent = async () => {
+    if (!id) return;
+
+    try {
+      setLoading(true);
+      const agentData = await getAgentById(id);
+      setAgent(agentData);
+    } catch (error) {
+      console.error('Error fetching agent:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!token) {
       window.location = '/'
+    } else {
+      fetchAgent();
     }
-  }, [token])
+  }, [token, id])
 
 
   return (
@@ -38,7 +58,9 @@ export default function PrivateLayout() {
           }}
           className='!bg-gray-200 rounded-lg mr-4'
         />
-        <div className="demo-logo font-semibold text-2xl" >Agent name</div>
+        <div className="demo-logo font-semibold text-2xl">
+          {loading ? 'Loading...' : (agent?.agent_name || 'Agent name')}
+        </div>
 
         <div className='ml-auto'>
           <UserMenu />

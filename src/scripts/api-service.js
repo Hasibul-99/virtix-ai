@@ -248,3 +248,14 @@ export const postDataWithRefresh = async (query, data, no_token, showError, notS
     throw error;
   }
 };
+
+// Agent-specific API methods
+export const getAgentById = async (agentId) => {
+  try {
+    const response = await getData(`api/agent/agents/${agentId}/`);
+    return response;
+  } catch (error) {
+    console.error('Error fetching agent by ID:', error);
+    throw error;
+  }
+};
