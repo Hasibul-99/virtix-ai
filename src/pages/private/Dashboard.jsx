@@ -1,5 +1,5 @@
 import { Line } from '@ant-design/plots';
-import { Card, Col, Radio, Row, Table, Spin } from 'antd';
+import { Card, Col, Radio, Row, Spin, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getDashboardData } from '../../scripts/api-service';
 
@@ -19,19 +19,13 @@ const dataSource = [
 const columns = [
   {
     title: 'Question',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'prompt',
+    key: 'prompt',
   },
   {
     title: 'Times',
-    dataIndex: 'age',
-    key: 'age',
-    width: 150,
-  },
-  {
-    title: 'Confidence',
-    dataIndex: 'age',
-    key: 'age',
+    dataIndex: 'count',
+    key: 'count',
     width: 150,
   },
 ];
@@ -63,7 +57,7 @@ export default function Dashboard() {
     if (value === 'Weekly') daysValue = 7;
     else if (value === 'Monthly') daysValue = 30;
     else if (value === 'Daily') daysValue = 1;
-    
+
     setDays(daysValue);
   };
 
@@ -88,8 +82,8 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.active_conversations || 0}</h2>
-                <p className='text-gray-500'>Active Conversations</p>
+                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.conversations || 0}</h2>
+                <p className='text-gray-500'>Total Conversations</p>
               </div>
             </div>
           </Card>
@@ -101,8 +95,8 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.sign_ups || 0}</h2>
-                <p className='text-gray-500'>Sign up</p>
+                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.messages || 0}</h2>
+                <p className='text-gray-500'>Total Messages</p>
               </div>
             </div>
           </Card>
@@ -114,8 +108,8 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.resolved || 0}</h2>
-                <p className='text-gray-500'>Resolved</p>
+                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.customers || 0}</h2>
+                <p className='text-gray-500'>Total Customers</p>
               </div>
             </div>
           </Card>
@@ -127,8 +121,8 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.avg_session_time || '0:00m'}</h2>
-                <p className='text-gray-500'>Avg. session time</p>
+                <h2 className='text-2xl font-bold'>{dashboardData?.agent_name || 'N/A'}</h2>
+                <p className='text-gray-500'>Agent Name</p>
               </div>
             </div>
           </Card>
@@ -154,7 +148,7 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-            <DemoLine data={dashboardData?.chat_volume_data || []} />
+            <DemoLine data={dashboardData?.last_7d || []} />
           </Card>
         </Col>
 
@@ -167,10 +161,10 @@ export default function Dashboard() {
       </Row>
       <Card>
         <h2 className='text-xl font-bold mb-4'>Top FAQs Asked </h2>
-        <Table 
-          dataSource={dashboardData?.top_faqs || dataSource} 
-          columns={columns} 
-          pagination={false} 
+        <Table
+          dataSource={dashboardData?.top_topics || dataSource}
+          columns={columns}
+          pagination={false}
         />
       </Card>
     </div>
@@ -179,23 +173,30 @@ export default function Dashboard() {
 
 const DemoLine = ({ data }) => {
   const defaultData = [
-    { year: '1991', value: 3 },
-    { year: '1992', value: 4 },
-    { year: '1993', value: 3.5 },
-    { year: '1994', value: 5 },
-    { year: '1995', value: 4.9 },
-    { year: '1996', value: 6 },
-    { year: '1997', value: 7 },
-    { year: '1998', value: 9 },
-    { year: '1999', value: 13 },
+    { date: '2025-01-01', count: 3 },
+    { date: '2025-01-02', count: 4 },
+    { date: '2025-01-03', count: 3.5 },
+    { date: '2025-01-04', count: 5 },
+    { date: '2025-01-05', count: 4.9 },
+    { date: '2025-01-06', count: 6 },
+    { date: '2025-01-07', count: 7 },
   ];
-  
-  const chartData = data && data.length > 0 ? data : defaultData;
-  
+
+  // Transform API data to match chart format
+  const transformedData = data && data.length > 0 
+    ? data.map(item => ({
+        date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        count: item.count
+      }))
+    : defaultData.map(item => ({
+        date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        count: item.count
+      }));
+
   const config = {
-    data: chartData,
-    xField: 'year',
-    yField: 'value',
+    data: transformedData,
+    xField: 'date',
+    yField: 'count',
     point: {
       shapeField: 'square',
       sizeField: 4,
