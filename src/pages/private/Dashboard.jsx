@@ -1,5 +1,7 @@
 import { Line } from '@ant-design/plots';
-import { Card, Col, Radio, Row, Table } from 'antd';
+import { Card, Col, Radio, Row, Table, Spin } from 'antd';
+import { useEffect, useState } from 'react';
+import { getDashboardData } from '../../scripts/api-service';
 
 const dataSource = [
   {
@@ -35,6 +37,43 @@ const columns = [
 ];
 
 export default function Dashboard() {
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [days, setDays] = useState(7);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [days]);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const data = await getDashboardData(days, 5);
+      setDashboardData(data);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTimeRangeChange = (e) => {
+    const value = e.target.value;
+    let daysValue = 7;
+    if (value === 'Weekly') daysValue = 7;
+    else if (value === 'Monthly') daysValue = 30;
+    else if (value === 'Daily') daysValue = 1;
+    
+    setDays(daysValue);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Spin size="large" />
+      </div>
+    );
+  }
   return (
     <div className='space-y-6'>
       <h1 className="text-2xl font-bold">
@@ -49,7 +88,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>10</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.active_conversations || 0}</h2>
                 <p className='text-gray-500'>Active Conversations</p>
               </div>
             </div>
@@ -62,7 +101,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>322</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.sign_ups || 0}</h2>
                 <p className='text-gray-500'>Sign up</p>
               </div>
             </div>
@@ -75,7 +114,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>322</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.resolved || 0}</h2>
                 <p className='text-gray-500'>Resolved</p>
               </div>
             </div>
@@ -88,7 +127,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>1:40m</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.avg_session_time || '0:00m'}</h2>
                 <p className='text-gray-500'>Avg. session time</p>
               </div>
             </div>
@@ -108,14 +147,14 @@ export default function Dashboard() {
                     { label: 'Weekly', value: 'Weekly', className: 'label-2' },
                     { label: 'Monthly', value: 'Monthly', className: 'label-3' },
                   ]}
-                  onChange={() => { }}
-                  value={'Daily'}
+                  onChange={handleTimeRangeChange}
+                  value={days === 1 ? 'Daily' : days === 7 ? 'Weekly' : 'Monthly'}
                   optionType="button"
                   buttonStyle="solid"
                 />
               </div>
             </div>
-            <DemoLine />
+            <DemoLine data={dashboardData?.chat_volume_data || []} />
           </Card>
         </Col>
 
@@ -128,14 +167,18 @@ export default function Dashboard() {
       </Row>
       <Card>
         <h2 className='text-xl font-bold mb-4'>Top FAQs Asked </h2>
-        <Table dataSource={dataSource} columns={columns} pagination={false} />
+        <Table 
+          dataSource={dashboardData?.top_faqs || dataSource} 
+          columns={columns} 
+          pagination={false} 
+        />
       </Card>
     </div>
   )
 }
 
-const DemoLine = () => {
-  const data = [
+const DemoLine = ({ data }) => {
+  const defaultData = [
     { year: '1991', value: 3 },
     { year: '1992', value: 4 },
     { year: '1993', value: 3.5 },
@@ -146,8 +189,11 @@ const DemoLine = () => {
     { year: '1998', value: 9 },
     { year: '1999', value: 13 },
   ];
+  
+  const chartData = data && data.length > 0 ? data : defaultData;
+  
   const config = {
-    data,
+    data: chartData,
     xField: 'year',
     yField: 'value',
     point: {

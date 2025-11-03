@@ -259,3 +259,14 @@ export const getAgentById = async (agentId) => {
     throw error;
   }
 };
+
+// Dashboard API method
+export const getDashboardData = async (days = 7, top = 5) => {
+  try {
+    const response = await getData(`api/agent/kotha/dashboard?days=${days}&top=${top}`);
+    return response;
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    throw error;
+  }
+};
