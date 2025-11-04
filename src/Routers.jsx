@@ -43,7 +43,7 @@ export default function Routers() {
         </Route>
         <Route path='/:id/dashboard' element={<PrivateLayout />}>
           <Route path='/:id/dashboard' element={<Dashboard />} />
-          <Route path='/:id/dashboard/chat-history' element={<ChatHistory />} />
+          <Route path='/:id/dashboard/chat-history/:customerId' element={<ChatHistory />} />
           <Route path='/:id/dashboard/manage-prompts' element={<ManagePrompts />} />
           <Route path='/:id/dashboard/manage-files' element={<ManageFiles />} />
           <Route path='/:id/dashboard/customers' element={<Customers />} />

@@ -1,20 +1,10 @@
 import { Line } from '@ant-design/plots';
-import { Card, Col, Radio, Row, Spin, Table } from 'antd';
+import { Card, Col, Radio, Row, Spin, Table, message } from 'antd';
 import { useEffect, useState } from 'react';
-import { getDashboardData } from '../../scripts/api-service';
+import { getData } from '../../scripts/api-service';
+import { useContentApi } from '../../contexts/ContentApiContext';
 
-const dataSource = [
-  {
-    key: '1',
-    name: 'Mike',
-    age: 32,
-  },
-  {
-    key: '2',
-    name: 'John',
-    age: 42,
-  },
-];
+// Removed demo data source as per requirement
 
 const columns = [
   {
@@ -34,18 +24,27 @@ export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState(7);
+  const { currentAgentName } = useContentApi();
 
   useEffect(() => {
-    fetchDashboardData();
-  }, [days]);
+    if (currentAgentName) {
+      fetchDashboardData();
+    }
+  }, [days, currentAgentName]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const data = await getDashboardData(days, 5);
+      if (!currentAgentName) {
+        setDashboardData(null);
+        return;
+      }
+      const data = await getData(`api/agent/${currentAgentName}/dashboard/?days=${days}&top=5`);
       setDashboardData(data);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      message.error('Error loading dashboard');
+      setDashboardData(null);
     } finally {
       setLoading(false);
     }
@@ -82,7 +81,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.conversations || 0}</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.conversations ?? 0}</h2>
                 <p className='text-gray-500'>Total Conversations</p>
               </div>
             </div>
@@ -95,7 +94,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.messages || 0}</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.messages ?? 0}</h2>
                 <p className='text-gray-500'>Total Messages</p>
               </div>
             </div>
@@ -108,7 +107,7 @@ export default function Dashboard() {
                 <img src="/assets/images/Frame191.png" alt="icon" />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.customers || 0}</h2>
+                <h2 className='text-2xl font-bold'>{dashboardData?.totals?.customers ?? 0}</h2>
                 <p className='text-gray-500'>Total Customers</p>
               </div>
             </div>
@@ -162,7 +161,7 @@ export default function Dashboard() {
       <Card>
         <h2 className='text-xl font-bold mb-4'>Top FAQs Asked </h2>
         <Table
-          dataSource={dashboardData?.top_topics || dataSource}
+          dataSource={dashboardData?.top_topics || []}
           columns={columns}
           pagination={false}
         />
@@ -172,26 +171,14 @@ export default function Dashboard() {
 }
 
 const DemoLine = ({ data }) => {
-  const defaultData = [
-    { date: '2025-01-01', count: 3 },
-    { date: '2025-01-02', count: 4 },
-    { date: '2025-01-03', count: 3.5 },
-    { date: '2025-01-04', count: 5 },
-    { date: '2025-01-05', count: 4.9 },
-    { date: '2025-01-06', count: 6 },
-    { date: '2025-01-07', count: 7 },
-  ];
+  if (!data || data.length === 0) {
+    return <div className="text-center text-gray-500">Not found data</div>;
+  }
 
-  // Transform API data to match chart format
-  const transformedData = data && data.length > 0 
-    ? data.map(item => ({
-        date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        count: item.count
-      }))
-    : defaultData.map(item => ({
-        date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        count: item.count
-      }));
+  const transformedData = data.map(item => ({
+    date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    count: item.count
+  }));
 
   const config = {
     data: transformedData,
