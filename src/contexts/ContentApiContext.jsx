@@ -19,6 +19,7 @@ export const ContentApiProvider = ({ children }) => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentAgentName, setCurrentAgentName] = useState(null);
 
   // Function to fetch agents using GET_AGENT endpoint
   const fetchAgents = async () => {
@@ -70,7 +71,9 @@ export const ContentApiProvider = ({ children }) => {
     fetchAgents,
     getAgentById,
     refreshAgents,
-    setError
+    setError,
+    currentAgentName,
+    setCurrentAgentName,
   };
 
   return (

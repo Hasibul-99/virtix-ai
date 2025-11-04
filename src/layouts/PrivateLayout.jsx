@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import UserMenu from '../components/common/privateLayout/UserMenu';
 import { getAgentById } from '../scripts/api-service';
+import { useContentApi } from '../contexts/ContentApiContext';
 const { Header, Content, Sider } = Layout;
 
 export default function PrivateLayout() {
@@ -20,6 +21,7 @@ export default function PrivateLayout() {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const token = Cookies.get('kotha_token')
+  const { setCurrentAgentName } = useContentApi();
 
   // Fetch agent data by ID using api-service
   const fetchAgent = async () => {
@@ -29,6 +31,8 @@ export default function PrivateLayout() {
       setLoading(true);
       const agentData = await getAgentById(id);
       setAgent(agentData);
+      // Store agent_name in context
+      setCurrentAgentName(agentData?.agent_name || null);
     } catch (error) {
       console.error('Error fetching agent:', error);
     } finally {
@@ -85,14 +89,13 @@ export default function PrivateLayout() {
             ]}
           />
         </Sider>
-        <Layout style={{ padding: '0 24px 24px' }}>
+        <Layout style={{ padding: '24px 24px' }}>
           <Content
             style={{
               padding: 24,
-              margin: 0,
-              minHeight: '88vh',
-              // background: colorBgContainer,
-              // borderRadius: borderRadiusLG,
+              minHeight: 280,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
             }}
           >
             <Outlet />
@@ -100,6 +103,5 @@ export default function PrivateLayout() {
         </Layout>
       </Layout>
     </Layout>
-
-  )
+  );
 }
