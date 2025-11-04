@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Input, DatePicker, InputNumber, Space, message, Spin } from 'antd';
-import { SearchOutlined, FilterOutlined, ReloadOutlined, DownloadOutlined } from '@ant-design/icons';
+import { SearchOutlined, FilterOutlined, ReloadOutlined, DownloadOutlined, MessageOutlined } from '@ant-design/icons';
 import { getData } from '../../scripts/api-service';
 import { useContentApi } from '../../contexts/ContentApiContext';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const { RangePicker } = DatePicker;
 
@@ -18,6 +19,8 @@ const Customers = () => {
     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
   });
   const { currentAgentName } = useContentApi();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   // Filter states
   const [filters, setFilters] = useState({
@@ -227,6 +230,19 @@ const Customers = () => {
       key: 'last_seen',
       render: (date) => new Date(date).toLocaleDateString(),
       sorter: (a, b) => new Date(a.last_seen) - new Date(b.last_seen),
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      fixed: 'right',
+      width: 120,
+      render: (_, record) => (
+        <Button
+          shape="circle"
+          icon={<MessageOutlined />}
+          onClick={() => navigate(`/${id}/dashboard/chat-history/${record.customer_id}`)}
+        />
+      ),
     },
   ];
 

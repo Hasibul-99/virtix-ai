@@ -4,12 +4,12 @@ import {
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
 import Cookies from 'js-cookie';
-import { ClipboardMinus, Files, LayoutDashboard, MessageCircleReply, Settings, SquareChartGantt, Users } from 'lucide-react';
+import { ClipboardMinus, Files, LayoutDashboard, Settings, SquareChartGantt, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import UserMenu from '../components/common/privateLayout/UserMenu';
-import { getAgentById } from '../scripts/api-service';
 import { useContentApi } from '../contexts/ContentApiContext';
+import { getAgentById } from '../scripts/api-service';
 const { Header, Content, Sider } = Layout;
 
 export default function PrivateLayout() {
@@ -80,7 +80,7 @@ export default function PrivateLayout() {
             style={{ height: '100%', borderInlineEnd: 0 }}
             items={[
               { key: '1', icon: <LayoutDashboard />, label: <Link to={`/${id}/dashboard`}>Dashboard</Link> },
-              { key: '2', icon: <MessageCircleReply />, label: <Link to={`/${id}/dashboard/chat-history`}>Chat History</Link> },
+              // { key: '2', icon: <MessageCircleReply />, label: <Link to={`/${id}/dashboard/chat-history`}>Chat History</Link> },
               { key: '3', icon: <SquareChartGantt />, label: <Link to={`/${id}/dashboard/manage-prompts`}>Manage Prompts</Link> },
               { key: '4', icon: <Files />, label: <Link to={`/${id}/dashboard/manage-files`}>Manage Files</Link> },
               { key: '5', icon: <Users />, label: <Link to={`/${id}/dashboard/customers`}>Customers</Link> },
