@@ -1,5 +1,3 @@
-import { Button } from 'antd';
-import { ArrowRight } from 'lucide-react';
 
 const ExploreAgents = () => {
   const agents = [
@@ -23,18 +21,15 @@ const ExploreAgents = () => {
   return (
     <section className="explore-agents py-20">
       <div className="container flex flex-col items-center justify-center gap-8">
-        <h2 className="text-6xl leading-[120%] text-[#0C0900] font-bold">Explore Public AI Agents</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {agents.map((agent, index) => (
-            <div key={index} className="border border-[#D9D9D9] rounded-2xl p-6 flex flex-col items-center justify-center gap-4">
+            <div key={index} className="bg-[#f6f6f6] border border-[#D9D9D9] rounded-2xl p-6 flex flex-col items-center justify-center gap-4">
               <div className="agent-icon">
                 <img src={agent.icon} alt={agent.title} />
               </div>
               <h3 className="text-lg leading-[140%] text-center text-[#0C0900] font-bold">{agent.title}</h3>
               <p className="agent-description font-normal text-base leading-[140%] text-center text-[#0C0900]">{agent.description}</p>
-              <Button type="primary" className="w-full">
-                Try Agent <ArrowRight size={16} />
-              </Button>
+
             </div>
           ))}
         </div>
