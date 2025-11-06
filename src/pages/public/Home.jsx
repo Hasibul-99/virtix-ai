@@ -1,4 +1,5 @@
 import AIGrowth from '../../components/pages/home/AIGrowth';
+import BuildAgent from '../../components/pages/home/BuildAgent';
 import CTA from '../../components/pages/home/CTA';
 import CustomerInteractions from '../../components/pages/home/CustomerInteractions';
 import ExploreAgents from '../../components/pages/home/ExploreAgents';
@@ -12,6 +13,7 @@ function Home() {
       <Hero />
       <ExploreAgents />
       <ExplorePublic />
+      <BuildAgent />
       <CustomerInteractions />
       <AIGrowth />
       <Pricing />
