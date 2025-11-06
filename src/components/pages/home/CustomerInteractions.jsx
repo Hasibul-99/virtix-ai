@@ -3,9 +3,10 @@ import { Check } from 'lucide-react';
 
 const CustomerInteractions = () => {
   const features = [
-    "24/7 Availability",
-    "Multi-language Support",
-    "Smart Routing",
+    "24/7 Instant replies and actions with zero wait.",
+    "Accurate answers powered by your indexed data.",
+    "Seamless escalation with full chat transcripts.",
+    "Scales instantly to handle traffic spikes and launches."
   ];
 
   return (
@@ -17,7 +18,7 @@ const CustomerInteractions = () => {
               AI-powered customer interactions 24/7 — free to start
             </h2>
             <p className="font-normal text-base leading-[140%] text-[#0C0900]">
-              Deploy intelligent agents that handle customer inquiries around the clock. Start with our free tier and scale as your business grows.
+              Instantly boost agent productivity, ensure accurate and consistent answers, automate routine daily tasks, and empower your team to focus on what matters most.
             </p>
             <div className="features-list">
               {features.map((feature, index) => (
@@ -30,7 +31,7 @@ const CustomerInteractions = () => {
             <Button type="primary">Build your agent now</Button>
           </div>
           <div className="flex-1">
-            <img src="/assets/images/whiteCard2.png" alt="Customer Interactions" className="w-full h-auto" />
+            <img src="/assets/images/Home/image-4.png" alt="Customer Interactions" className="w-full h-auto" />
           </div>
         </div>
       </div>

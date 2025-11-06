@@ -7,14 +7,14 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex-2 space-y-4">
             <h1 className="text-6xl leading-[120%] text-[#0C0900] font-semibold">
-              Supercharge customer service with AI Agent
+              Clean, Apable AI Agent in a Few Clicks
             </h1>
             <p className="font-normal text-2xl leading-relaxed text-gray-600">
-              Unlock the full potential of your customer service with our AI-powered agent. Streamline interactions, boost efficiency, and deliver exceptional customer experiences.
+              Create an agent, set options, add questions, upload docs and index. Your agent then guides purchases, explains pricing, promotes offers, books appointments, and logs complaints 24/7.
             </p>
             <div className="flex items-center gap-4">
               <Button type="primary">Try for free</Button>
-              <Button>Try for free</Button>
+              <Button>Book a demo</Button>
             </div>
             <div className="mt-10">
               <p className='text-[24px] leading-[140%] text-[#444444] font-bold'>Trusted by</p>
