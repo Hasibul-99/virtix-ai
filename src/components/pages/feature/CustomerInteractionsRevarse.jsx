@@ -1,26 +1,23 @@
 import { Button } from 'antd';
 import { Check } from 'lucide-react';
 
-const CustomerInteractionsRevarce = () => {
-  const features = [
-    "24/7 Availability",
-    "Multi-language Support",
-    "Smart Routing",
-  ];
+const CustomerInteractionsRevarce = ({ data }) => {
+  if (!data) return null;
+  const { title, description, image, features = [] } = data;
 
   return (
     <section className="customer-interactions py-20">
       <div className="container">
         <div className="flex md:flex-row flex-col items-center justify-center gap-8">
           <div className="flex-1">
-            <img src="/assets/images/whiteCard2.png" alt="Customer Interactions" className="w-full h-auto" />
+            <img src={image} alt={title || "Customer Interactions"} className="w-full h-auto" />
           </div>
           <div className="flex-2 space-y-4">
             <h2 className="text-6xl leading-[120%] text-[#0C0900] font-bold">
-              AI-powered customer interactions 24/7 — free to start
+              {title}
             </h2>
             <p className="font-normal text-base leading-[140%] text-[#0C0900]">
-              Deploy intelligent agents that handle customer inquiries around the clock. Start with our free tier and scale as your business grows.
+              {description}
             </p>
             <div className="features-list">
               {features.map((feature, index) => (
@@ -32,7 +29,6 @@ const CustomerInteractionsRevarce = () => {
             </div>
             <Button type="primary">Build your agent now</Button>
           </div>
-
         </div>
       </div>
     </section>

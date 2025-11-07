@@ -184,8 +184,7 @@ const Pricing = () => {
             Designed for every stage of your journey.
           </p>
         </div>
-        {console.log("plans", plans)
-        }
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
           {plans.map((plan, index) => (
             <div
