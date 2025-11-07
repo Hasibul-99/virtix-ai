@@ -1,3 +1,4 @@
+import AiDrives from '../../components/pages/home/AiDrives';
 import AIGrowth from '../../components/pages/home/AIGrowth';
 import BuildAgent from '../../components/pages/home/BuildAgent';
 import CTA from '../../components/pages/home/CTA';
@@ -15,6 +16,7 @@ function Home() {
       <ExplorePublic />
       <BuildAgent />
       <CustomerInteractions />
+      <AiDrives />
       <AIGrowth />
       <Pricing />
       <CTA />

@@ -36,7 +36,7 @@ const Pricing = () => {
   // Format price for display
   const formatPrice = (priceUsd) => {
     const price = parseFloat(priceUsd);
-    return price === 0 ? 'Free' : `$${price}`;
+    return `$${price}`;
   };
 
   // Format number with commas
@@ -87,12 +87,7 @@ const Pricing = () => {
   // Determine if plan is popular (Business plan)
   const isPopular = (plan) => plan.code === 'business';
 
-  // Get button text based on plan
-  const getButtonText = (plan) => {
-    if (plan.contact_sales_only) return 'Contact Sales';
-    if (plan.price_usd === '0.00') return 'Get Started Free';
-    return 'Start Free Trial';
-  };
+
 
   // Handle plan selection with authentication check
   const handlePlanSelection = async (plan) => {
@@ -186,9 +181,11 @@ const Pricing = () => {
         <div className="md:w-3xl space-y-4">
           <h2 className="text-6xl leading-[120%] text-[#0C0900] font-bold text-center">Predictable pricing scalable plans</h2>
           <p className="font-normal text-base leading-[140%] text-[#0C0900] text-center">
-            Choose the perfect plan for your business needs.
+            Designed for every stage of your journey.
           </p>
         </div>
+        {console.log("plans", plans)
+        }
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
           {plans.map((plan, index) => (
             <div
@@ -198,34 +195,21 @@ const Pricing = () => {
                 : 'bg-[linear-gradient(172.42deg,#FFFFFF_4.56%,#E7D7FF_50.03%,#FFFFFF_95.51%)] border border-[#ECECEC]'
                 }`}
             >
-              {isPopular(plan) && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-[#6200FF] text-white px-4 py-2 rounded-full text-sm font-semibold">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-
               <div className="space-y-6">
                 {/* Plan Header */}
-                <div className="text-center space-y-2">
+                <div className="space-y-2">
                   <h3 className="text-2xl leading-[140%] text-[#0C0900] font-bold">{plan.name}</h3>
                   <div className="plan-price">
                     <span className="text-4xl leading-[140%] text-[#0C0900] font-bold">
                       {formatPrice(plan.price_usd)}
                     </span>
-                    {plan.price_usd !== '0.00' && (
-                      <span className="text-lg text-gray-600 ml-1">/month</span>
-                    )}
+                    <p className="text-lg text-gray-600 ml-1">/month</p>
                   </div>
-                  <p className="text-gray-600 text-sm">
-                    {plan.contact_sales_only ? 'Custom pricing available' : 'Perfect for growing businesses'}
-                  </p>
                 </div>
 
                 {/* CTA Button */}
                 <Button
-                  type="primary"
+                  type={isPopular(plan) ? "primary" : ''}
                   size="large"
                   loading={subscriptionLoading === plan.id}
                   onClick={() => handlePlanSelection(plan)}
@@ -234,7 +218,7 @@ const Pricing = () => {
                     : ''
                     }`}
                 >
-                  {subscriptionLoading === plan.id ? 'Processing...' : getButtonText(plan)}
+                  {subscriptionLoading === plan.id ? 'Processing...' : 'Get started'}
                 </Button>
 
                 {/* Features List */}
@@ -264,23 +248,6 @@ const Pricing = () => {
                   ))}
                 </div>
 
-                {/* Plan Limits Summary */}
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="grid grid-cols-2 gap-4 text-xs text-gray-600">
-                    <div>
-                      <span className="font-semibold text-[#0C0900]">Agents:</span> {formatNumber(plan.max_agents)}
-                    </div>
-                    <div>
-                      <span className="font-semibold text-[#0C0900]">Files:</span> {formatNumber(plan.max_files)}
-                    </div>
-                    <div>
-                      <span className="font-semibold text-[#0C0900]">Messages:</span> {formatNumber(plan.max_messages_per_month)}/mo
-                    </div>
-                    <div>
-                      <span className="font-semibold text-[#0C0900]">Storage:</span> {formatBytes(plan.max_storage_bytes)}
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           ))}

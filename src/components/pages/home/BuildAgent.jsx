@@ -1,19 +1,19 @@
 import { ConfigProvider, Steps } from 'antd';
 const items = [
   {
-    title: 'Create agent',
+    title: <span className='font-bold'>Create agent</span>,
     icon: <img src="/assets/images/Home/image-95.png" alt="" />,
-    description: 'Set your agent’s name, tone, and purpose. Define how it represents your brand and interacts with users.',
+    description: <span className='text-white text-[10px]'>Set your agent’s name, tone, and purpose. Define how it represents your brand and interacts with users.</span>,
   },
   {
-    title: 'Add questions',
+    title: <span className='font-bold'>Add questions</span>,
     icon: <img src="/assets/images/Home/image-96.png" alt="" />,
-    description: 'Add FAQs, guided conversations, and customer prompts so your AI can respond naturally and accurately to every query.',
+    description: <span className='text-white text-[10px]'>Add FAQs, guided conversations, and customer prompts so your AI can respond naturally and accurately to every query.</span>,
   },
   {
-    title: 'Embed & launch',
+    title: <span className='font-bold'>Embed & launch</span>,
     icon: <img src="/assets/images/Home/image-97.png" alt="" />,
-    description: 'Copy the widget code and add it to your site. Go live and let your agent start engaging users instantly.',
+    description: <span className='text-white text-[10px]'>Copy the widget code and add it to your site. Go live and let your agent start engaging users instantly.</span>,
   },
 ];
 export default function BuildAgent() {
