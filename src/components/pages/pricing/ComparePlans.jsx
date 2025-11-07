@@ -36,21 +36,21 @@ const columns = [
 const data = [
   {
     key: '1',
-    name: 'John Brown',
+    name: 'Features name',
     free: false,
     studio: true,
     enterprise: true,
   },
   {
     key: '2',
-    name: 'Jim Green',
+    name: 'Features name',
     free: true,
     studio: false,
     enterprise: true,
   },
   {
     key: '3',
-    name: 'Joe Black',
+    name: 'Features name',
     free: true,
     studio: true,
     enterprise: false,
