@@ -1,12 +1,43 @@
-import { Button, Col, Form, Input, Row } from 'antd';
+import { Button, Col, Form, Input, Row, message } from 'antd';
+import { postData } from '../../../scripts/api-service';
 
 const { TextArea } = Input;
 
 export default function ContactUs() {
   const [form] = Form.useForm();
 
-  const onFinish = values => {
-    console.log(values);
+  const onFinish = async (values) => {
+    try {
+      const website = values['Website'];
+      const workEmail = values['Work email'];
+      const teamSize = values['Team size'];
+      const helpMessage = values['How can we help?'];
+
+      const inferredName = workEmail ? workEmail.split('@')[0] : '';
+
+      const payload = {
+        name: inferredName,
+        email: workEmail,
+        company: website,
+        industry: String(teamSize || ''),
+        message: helpMessage,
+      };
+
+      const res = await postData('api/billing/contact/submit/', payload, false);
+
+      if (res?.data?.ok) {
+        message.success(`Thanks! Request ID: ${res?.data?.id}`);
+        form.resetFields();
+      } else if (res?.error) {
+        const errors = res?.errors;
+        const msg = errors ? (Array.isArray(errors) ? errors.join(', ') : Object.values(errors).flat().join(', ')) : 'Submission failed.';
+        message.error(msg);
+      } else {
+        message.error('Submission failed. Please try again.');
+      }
+    } catch (err) {
+      message.error('Submission failed. Please try again.');
+    }
   };
 
   return (

@@ -4,7 +4,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
 import Cookies from 'js-cookie';
-import { ClipboardMinus, Files, LayoutDashboard, Settings, SquareChartGantt, Users } from 'lucide-react';
+import { ClipboardMinus, Files, LayoutDashboard, Lightbulb, Settings, SquareChartGantt, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import UserMenu from '../components/common/privateLayout/UserMenu';
@@ -82,8 +82,9 @@ export default function PrivateLayout() {
               { key: '1', icon: <LayoutDashboard />, label: <Link to={`/${id}/dashboard`}>Dashboard</Link> },
               // { key: '2', icon: <MessageCircleReply />, label: <Link to={`/${id}/dashboard/chat-history`}>Chat History</Link> },
               { key: '3', icon: <SquareChartGantt />, label: <Link to={`/${id}/dashboard/manage-prompts`}>Manage Prompts</Link> },
-              { key: '4', icon: <Files />, label: <Link to={`/${id}/dashboard/manage-files`}>Manage Files</Link> },
+              { key: '4', icon: <Files />, label: <Link to={`/${id}/dashboard/manage-files`}>Manage Documents</Link> },
               { key: '5', icon: <Users />, label: <Link to={`/${id}/dashboard/customers`}>Customers</Link> },
+              { key: '8', icon: <Lightbulb />, label: <Link to={`/${id}/dashboard/knowledge`}>Knowledge</Link> },
               { key: '6', icon: <Settings />, label: <Link to={`/${id}/dashboard/agent-settings`}>Agent Settings</Link> },
               { key: '7', icon: <ClipboardMinus />, label: <Link to={`/${id}/dashboard`}>Reports</Link> },
             ]}

@@ -191,32 +191,29 @@ export const logoutUser = async () => {
 
 // Token refresh function
 export const refreshToken = async () => {
-  const refreshToken = Cookies.get('kotha_refresh_token');
+  const refresh = Cookies.get('kotha_refresh_token');
 
-  if (!refreshToken) {
+  if (!refresh) {
     throw new Error('No refresh token available');
   }
 
   try {
-    const response = await postData('api/user/token/refresh/', {
-      refresh: refreshToken
-    }, true);
+    const res = await postData('api/user/token/refresh/', { refresh }, true);
+    const data = res?.data ?? res;
 
-    if (response && response.access) {
-      // Update the access token
-      Cookies.set('kotha_token', response.access, { expires: 1 });
-      localStorage.setItem('kotha_token', response.access);
+    if (data?.access) {
+      Cookies.set('kotha_token', data.access, { expires: 1 });
+      localStorage.setItem('kotha_token', data.access);
 
-      // Update refresh token if provided
-      if (response.refresh) {
-        Cookies.set('kotha_refresh_token', response.refresh, { expires: 7 });
-        localStorage.setItem('kotha_refresh_token', response.refresh);
+      if (data?.refresh) {
+        Cookies.set('kotha_refresh_token', data.refresh, { expires: 7 });
+        localStorage.setItem('kotha_refresh_token', data.refresh);
       }
 
-      return response.access;
-    } else {
-      throw new Error('Invalid refresh response');
+      return data.access;
     }
+
+    throw new Error('Invalid refresh response');
   } catch (error) {
     console.error('Token refresh failed:', error);
     // Clear tokens and redirect to login
@@ -226,6 +223,29 @@ export const refreshToken = async () => {
     localStorage.removeItem('kotha_refresh_token');
     window.location.href = '/signin';
     throw error;
+  }
+};
+
+export const refreshTokenWithValue = async (refresh) => {
+  try {
+    const res = await postData('api/user/token/refresh/', { refresh }, true);
+    const data = res?.data ?? res;
+    if (data?.access) {
+      Cookies.set('kotha_token', data.access, { expires: 1 });
+      localStorage.setItem('kotha_token', data.access);
+      if (data?.refresh) {
+        Cookies.set('kotha_refresh_token', data.refresh, { expires: 7 });
+        localStorage.setItem('kotha_refresh_token', data.refresh);
+      }
+      return data;
+    }
+    throw new Error('Invalid refresh response');
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    return {
+      error: true,
+      errors: error?.response?.data || 'Token refresh failed',
+    };
   }
 };
 

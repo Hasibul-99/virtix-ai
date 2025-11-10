@@ -19,6 +19,7 @@ import Contact from './pages/public/Contact.jsx';
 import Features from './pages/public/Features.jsx';
 import Home from './pages/public/Home.jsx';
 import Pricing from './pages/public/Pricing.jsx';
+import Knowledge from './pages/private/knowledge.jsx';
 
 export default function Routers() {
   return (
@@ -48,6 +49,7 @@ export default function Routers() {
           <Route path='/:id/dashboard/manage-files' element={<ManageFiles />} />
           <Route path='/:id/dashboard/customers' element={<Customers />} />
           <Route path='/:id/dashboard/agent-settings' element={<AgentSettings />} />
+          <Route path='/:id/dashboard/knowledge' element={<Knowledge />} />
         </Route>
       </Routes>
     </BrowserRouter>
