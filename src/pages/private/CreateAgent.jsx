@@ -27,7 +27,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useContentApi } from '../../contexts/ContentApiContext';
 import { DELETE_AGENT, UPDATE_AGENT } from '../../scripts/api';
-import { deleteData, patchData } from '../../scripts/api-service';
+import { deleteData, patchData, postData } from '../../scripts/api-service';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -121,6 +121,37 @@ export default function CreateAgent() {
       // Delete agent
       setSelectedAgent(agent);
       setDeleteModalVisible(true);
+    } else if (e.key === '3') {
+      // Build agent index
+      setSelectedAgent(agent);
+      Modal.confirm({
+        title: 'Build Agent',
+        content: 'Trigger rebuilding the agent index with fresh=true?',
+        okText: 'Build',
+        cancelText: 'Cancel',
+        onOk: async () => {
+          const hide = message.loading('Building agent...', 0);
+          try {
+            const slug = agent?.agent_name || 'kotha';
+            const res = await postData(`api/agent/${slug}/index/`, { fresh: true });
+            const data = res?.data ?? res;
+
+            if (data?.ok || (res?.status && res.status >= 200 && res.status < 300)) {
+              message.success('Agent build triggered successfully');
+            } else if (data?.error) {
+              const errMsg = typeof data?.errors === 'string' ? data.errors : 'Build request failed';
+              message.error(errMsg);
+            } else {
+              message.success('Build request sent');
+            }
+          } catch (error) {
+            console.error('Build agent error:', error);
+            message.error('Failed to build agent');
+          } finally {
+            hide();
+          }
+        }
+      });
     }
   };
 
@@ -231,6 +262,7 @@ export default function CreateAgent() {
                       menu={{
                         items: [
                           { key: '1', label: 'Edit Agent' },
+                          { key: '3', label: 'Build Agent' },
                           { key: '2', label: 'Delete Agent' }
                         ],
                         onClick: (e) => handleMenuClick(e, agent),

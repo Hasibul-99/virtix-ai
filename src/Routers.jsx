@@ -8,18 +8,19 @@ import ForgetPassword from './pages/auth/ForgetPassword.jsx';
 import ResetPassword from './pages/auth/ResetPassword.jsx';
 import Signin from './pages/auth/Signin.jsx';
 import Signup from './pages/auth/Signup.jsx';
+import AgentReport from './pages/private/AgentReport.jsx';
 import AgentSettings from './pages/private/AgentSettings.jsx';
 import ChatHistory from './pages/private/ChatHistory.jsx';
 import CreateAgent from './pages/private/CreateAgent.jsx';
 import Customers from './pages/private/Customers.jsx';
 import Dashboard from './pages/private/Dashboard.jsx';
+import Knowledge from './pages/private/knowledge.jsx';
 import ManageFiles from './pages/private/ManageFiles.jsx';
 import ManagePrompts from './pages/private/ManagePrompts.jsx';
 import Contact from './pages/public/Contact.jsx';
 import Features from './pages/public/Features.jsx';
 import Home from './pages/public/Home.jsx';
 import Pricing from './pages/public/Pricing.jsx';
-import Knowledge from './pages/private/knowledge.jsx';
 
 export default function Routers() {
   return (
@@ -50,6 +51,7 @@ export default function Routers() {
           <Route path='/:id/dashboard/customers' element={<Customers />} />
           <Route path='/:id/dashboard/agent-settings' element={<AgentSettings />} />
           <Route path='/:id/dashboard/knowledge' element={<Knowledge />} />
+          <Route path='/:id/dashboard/report' element={<AgentReport />} />
         </Route>
       </Routes>
     </BrowserRouter>

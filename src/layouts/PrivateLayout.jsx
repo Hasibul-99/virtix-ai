@@ -86,7 +86,7 @@ export default function PrivateLayout() {
               { key: '5', icon: <Users />, label: <Link to={`/${id}/dashboard/customers`}>Customers</Link> },
               { key: '8', icon: <Lightbulb />, label: <Link to={`/${id}/dashboard/knowledge`}>Knowledge</Link> },
               { key: '6', icon: <Settings />, label: <Link to={`/${id}/dashboard/agent-settings`}>Agent Settings</Link> },
-              { key: '7', icon: <ClipboardMinus />, label: <Link to={`/${id}/dashboard`}>Reports</Link> },
+              { key: '7', icon: <ClipboardMinus />, label: <Link to={`/${id}/dashboard/report`}>Reports</Link> },
             ]}
           />
         </Sider>
