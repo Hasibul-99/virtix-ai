@@ -1,6 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Table, Button, Input, DatePicker, Select, Space, Tag, message, Spin } from 'antd';
+import { Table, Button, Input, DatePicker, Select, Space, message, Spin } from 'antd';
 import { ReloadOutlined, SearchOutlined, DownloadOutlined, FilterOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { getData } from '../../scripts/api-service';
@@ -20,25 +20,21 @@ export default function AgentReport() {
     date_from: null,
     date_to: null,
     customer_id: '',
-    conversation_id: '',
+    conversation: '',
     search: '',
-    has_audio: '', // '', 'true', 'false'
     page: 1,
     page_size: 10,
   });
 
   const columns = useMemo(() => {
     return [
-      { title: 'Customer', dataIndex: 'customer_id', key: 'customer_id' },
-      { title: 'Conversation', dataIndex: 'conversation_id', key: 'conversation_id' },
+      { title: 'ID', dataIndex: 'id', key: 'id', width: 80 },
+      { title: 'Customer', dataIndex: 'customer_id', key: 'customer_id', width: 110 },
+      { title: 'Conversation', dataIndex: 'conversation', key: 'conversation', width: 180 },
+      { title: 'Email', dataIndex: 'email', key: 'email', width: 220 },
       { title: 'Query', dataIndex: 'user_query', key: 'user_query', ellipsis: true },
+      { title: 'Prompt', dataIndex: 'prompt', key: 'prompt', ellipsis: true },
       { title: 'Response', dataIndex: 'response', key: 'response', ellipsis: true },
-      { 
-        title: 'Audio', 
-        dataIndex: 'has_audio', 
-        key: 'has_audio', 
-        render: (val) => val ? <Tag color="blue">Audio</Tag> : <Tag>None</Tag> 
-      },
       { title: 'Date', dataIndex: 'date', key: 'date' },
     ];
   }, []);
@@ -47,10 +43,9 @@ export default function AgentReport() {
     const params = new URLSearchParams();
     if (filters.search) params.append('search', filters.search);
     if (filters.customer_id) params.append('customer_id', filters.customer_id);
-    if (filters.conversation_id) params.append('conversation_id', filters.conversation_id);
+    if (filters.conversation) params.append('conversation', filters.conversation);
     if (filters.date_from) params.append('date_from', filters.date_from);
     if (filters.date_to) params.append('date_to', filters.date_to);
-    if (filters.has_audio) params.append('has_audio', filters.has_audio);
     params.append('page', String(page));
     params.append('page_size', String(pageSize));
     return params.toString();
@@ -111,7 +106,7 @@ export default function AgentReport() {
 
   const convertToCSV = (items) => {
     if (!items || items.length === 0) return '';
-    const headers = Object.keys(items[0]);
+    const headers = ['id','customer_id','conversation','email','user_query','prompt','response','date'];
     const lines = [headers.join(',')];
     for (const item of items) {
       const row = headers.map(h => {
@@ -186,21 +181,11 @@ export default function AgentReport() {
             style={{ width: 160 }}
           />
           <Input
-            placeholder="Conversation ID"
-            value={filters.conversation_id}
-            onChange={(e) => handleFilterChange('conversation_id', e.target.value)}
+            placeholder="Conversation"
+            value={filters.conversation}
+            onChange={(e) => handleFilterChange('conversation', e.target.value)}
             style={{ width: 180 }}
           />
-          <Select
-            placeholder="Has Audio"
-            value={filters.has_audio}
-            onChange={(val) => handleFilterChange('has_audio', val)}
-            style={{ width: 140 }}
-            allowClear
-          >
-            <Option value="true">Yes</Option>
-            <Option value="false">No</Option>
-          </Select>
           <Select
             placeholder="Page size"
             value={pagination.pageSize}
@@ -224,7 +209,7 @@ export default function AgentReport() {
         <div className="text-center py-10"><Spin size="large" /></div>
       ) : (
         <Table
-          rowKey={(record) => record.id || `${record.customer_id}-${record.conversation_id}-${record.date}`}
+          rowKey={(record) => record.id || `${record.customer_id}-${record.conversation}-${record.date}`}
           columns={columns}
           dataSource={data}
           pagination={pagination}
