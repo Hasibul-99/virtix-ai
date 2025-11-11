@@ -19,9 +19,10 @@ export default function AgentSettings() {
   const [newMessage, setNewMessage] = useState('');
   const [draggedItem, setDraggedItem] = useState(null);
 
-  const codeRef = useRef(null);
+   const codeRef = useRef(null);
+   const [themeColor, setThemeColor] = useState('#1677ff');
 
-  const addMessage = () => {
+   const addMessage = () => {
     if (newMessage.trim()) {
       setMessages([...messages, { id: Date.now(), text: newMessage }]);
       setNewMessage('');
@@ -195,13 +196,14 @@ s0.parentNode.insertBefore(s1,s0);
             <div>
               <h3 className="font-semibold mb-2">Color</h3>
 
-              <div className='flex gap-4' >
+              <div className='flex gap-4 items-center' >
                 {
                   ['#035DFF', '#D42300', '#7866FF', '#05A84E'].map(color => (
-                    <Button key={color} style={{ padding: '20px', background: color }}></Button>
+                    <Button key={color} style={{ padding: '20px', background: color }} onClick={() => setThemeColor(color)}></Button>
                   ))
                 }
-                <ColorPicker defaultValue="#1677ff" showText />
+                <ColorPicker value={themeColor} showText onChange={(c, hex) => setThemeColor(c?.toHexString ? c.toHexString() : (hex || themeColor))} />
+                <span className="ml-2 text-sm text-gray-500">Theme: {themeColor}</span>
               </div>
             </div>
 
@@ -262,7 +264,7 @@ s0.parentNode.insertBefore(s1,s0);
         </Card>
 
         <div className="flex-1">
-          <MessageBox />
+          <MessageBox themeColor={themeColor} logoSrc={imageUrl} quickActions={messages.map(m => m.text)} />
         </div>
       </div>
     </div>
@@ -270,7 +272,7 @@ s0.parentNode.insertBefore(s1,s0);
 }
 
 
-const MessageBox = () => {
+const MessageBox = ({ themeColor = '#05A84E', logoSrc, quickActions = [] }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
     { id: 1, text: 'Hi, How are you?', sender: 'bot' }
@@ -289,15 +291,19 @@ const MessageBox = () => {
   return (
     <div className="w-full max-w-md mx-auto h-screen bg-white flex flex-col">
       {/* Header */}
-      <div className="bg-green-600 text-white p-4 flex items-center justify-between">
+      <div className="bg-green-600 text-white p-4 flex items-center justify-between" style={{ backgroundColor: themeColor }}>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <svg className="w-8 h-8" viewBox="0 0 32 32" fill="currentColor">
-              <path d="M16 4L4 10v6c0 8 5 14 12 18 7-4 12-10 12-18v-6L16 4z" />
-            </svg>
-            <span className="text-xl font-bold">VIRTIX AI</span>
-          </div>
-        </div>
+    <div className="flex items-center gap-2">
+      {logoSrc ? (
+        <img src={logoSrc} className="w-8 h-8 rounded" alt="logo" />
+      ) : (
+        <svg className="w-8 h-8" viewBox="0 0 32 32" fill="currentColor">
+          <path d="M16 4L4 10v6c0 8 5 14 12 18 7-4 12-10 12-18v-6L16 4z" />
+        </svg>
+      )}
+      <span className="text-xl font-bold" style={{ color: '#fff' }}>VIRTIX AI</span>
+    </div>
+  </div>
         <button className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
           <X className="w-5 h-5" />
         </button>
@@ -311,10 +317,8 @@ const MessageBox = () => {
             className={`mb-4 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}
           >
             <div
-              className={`inline-block px-4 py-2 rounded-lg ${msg.sender === 'user'
-                ? 'bg-green-600 text-white'
-                : 'bg-white text-gray-800 shadow-sm'
-                }`}
+              className={`inline-block px-4 py-2 rounded-lg max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user' ? '' : 'bg-white text-gray-800 shadow-sm'}`}
+              style={msg.sender === 'user' ? { backgroundColor: themeColor, color: '#fff' } : {}}
             >
               {msg.text}
             </div>
@@ -322,35 +326,20 @@ const MessageBox = () => {
         ))}
 
         {/* Quick Action Buttons */}
-        {messages.length === 1 && (
+        {quickActions.length > 0 && (
           <div className="mx-4 absolute bottom-4 w-[80%]">
-            <div>
-              <button
-                onClick={() => handleQuickAction('I have a question')}
-                className="flex-1 px-4 py-3 bg-white text-green-600 border-2 border-green-600 rounded-full hover:bg-green-50 transition-colors font-medium"
-              >
-                I have a question
-              </button>
-              <button
-                onClick={() => handleQuickAction('Tell me more')}
-                className="flex-1 px-4 py-3 bg-white text-green-600 border-2 border-green-600 rounded-full hover:bg-green-50 transition-colors font-medium"
-              >
-                Tell me more
-              </button>
-              <button
-                onClick={() => handleQuickAction('Tell me more')}
-                className="flex-1 px-4 py-3 bg-white text-green-600 border-2 border-green-600 rounded-full hover:bg-green-50 transition-colors font-medium"
-              >
-                Tell me more
-              </button>
-              <button
-                onClick={() => handleQuickAction('Tell me more')}
-                className="flex-1 px-4 py-3 bg-white text-green-600 border-2 border-green-600 rounded-full hover:bg-green-50 transition-colors font-medium"
-              >
-                Tell me more
-              </button>
+            <div className="flex flex-col gap-2">
+              {quickActions.map((qa, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleQuickAction(qa)}
+                  className="flex-1 px-4 py-3 bg-white rounded-full transition-colors font-medium"
+                  style={{ color: themeColor, border: `2px solid ${themeColor}` }}
+                >
+                  {qa}
+                </button>
+              ))}
             </div>
-
           </div>
         )}
       </div>
@@ -371,7 +360,8 @@ const MessageBox = () => {
           </button>
           <button
             onClick={handleSend}
-            className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition-colors"
+            className="text-white p-2 rounded-full transition-colors"
+            style={{ backgroundColor: themeColor }}
           >
             <Send className="w-5 h-5" />
           </button>
