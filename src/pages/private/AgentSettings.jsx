@@ -1,7 +1,7 @@
 import { CloseOutlined, LoadingOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, ColorPicker, Divider, Input, Upload, message } from "antd";
 import { Paperclip, Send, X } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 const { TextArea } = Input;
 
 
@@ -19,6 +19,7 @@ export default function AgentSettings() {
   const [newMessage, setNewMessage] = useState('');
   const [draggedItem, setDraggedItem] = useState(null);
 
+  const codeRef = useRef(null);
 
   const addMessage = () => {
     if (newMessage.trim()) {
@@ -107,6 +108,31 @@ export default function AgentSettings() {
     </div>
   );
 
+  const copyEmbed = async () => {
+    try {
+      const text = codeRef.current ? codeRef.current.innerText : '';
+      if (!text) {
+        message.warning('Nothing to copy');
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      message.success('Code copied to clipboard');
+    } catch (err) {
+      try {
+        const text = codeRef.current ? codeRef.current.innerText : '';
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        message.success('Code copied to clipboard');
+      } catch (e) {
+        message.error('Failed to copy code');
+      }
+    }
+  };
+
   return (
     <div className="">
       <Card>
@@ -118,9 +144,9 @@ export default function AgentSettings() {
         <Divider />
 
         <div className="relative">
-          <Button type="primary" className="absolute right-0">Copy</Button>
+          <Button type="primary" className="absolute right-0" onClick={copyEmbed}>Copy</Button>
           <pre className="bg-gray-100 p-4 rounded text-sm font-mono">
-            <code>
+            <code ref={codeRef}>
               {`<!--Start of Vertix AI Script-->
 <script type="text/javascript">
 var Vertix_API=Vertix AI||{}, Tawk_LoadStart=new Date();
