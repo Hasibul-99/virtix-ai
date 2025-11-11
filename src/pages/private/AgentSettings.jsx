@@ -1,7 +1,9 @@
 import { CloseOutlined, LoadingOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, ColorPicker, Divider, Input, Upload, message } from "antd";
 import { Paperclip, Send, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { getData, postData } from '../../scripts/api-service';
+import { useContentApi } from '../../contexts/ContentApiContext';
 const { TextArea } = Input;
 
 
@@ -273,44 +275,157 @@ s0.parentNode.insertBefore(s1,s0);
 
 
 const MessageBox = ({ themeColor = '#05A84E', logoSrc, quickActions = [] }) => {
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    { id: 1, text: 'Hi, How are you?', sender: 'bot' }
-  ]);
+  const { currentAgentName } = useContentApi();
+  const chatContainerRef = useRef(null);
+  const sentinelRef = useRef(null);
+  const [inputText, setInputText] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [loadingInitial, setLoadingInitial] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [nextUrl, setNextUrl] = useState(null);
 
-  const handleSend = () => {
-    if (message.trim()) {
-      setMessages([...messages, { id: messages.length + 1, text: message, sender: 'user' }]);
-      setMessage('');
+  const scrollToBottom = () => {
+    const el = chatContainerRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  };
+
+  const expandMessages = (item, idx) => {
+    const userText = item?.user_query ?? '';
+    const botText = item?.response ?? '';
+    const userAudio = item?.query_audio ?? null;
+    const botAudio = item?.response_audio ?? null;
+    const baseId = item?.id ?? idx;
+    const out = [];
+    if (userText || userAudio) {
+      out.push({ id: `${baseId}-u`, text: userText || '', audioUrl: userAudio || null, sender: 'user' });
+    }
+    if (botText || botAudio) {
+      out.push({ id: `${baseId}-b`, text: botText || '', audioUrl: botAudio || null, sender: 'bot' });
+    }
+    return out;
+  };
+
+  const fetchPage = async (url) => {
+    try {
+      const relative = /^https?:\/\//i.test(url) ? (() => { const u = new URL(url); return `${u.pathname}${u.search}`; })() : url;
+      const data = await getData(relative);
+      const results = data?.results ?? [];
+      const normalized = results.flatMap((itm, i) => expandMessages(itm, i));
+      setMessages(prev => [...prev, ...normalized]);
+      setNextUrl(data?.next ?? null);
+    } catch (err) {
+      console.error('Failed to load messages', err);
+      message.error('Failed to load messages');
     }
   };
 
-  const handleQuickAction = (action) => {
-    setMessages([...messages, { id: messages.length + 1, text: action, sender: 'user' }]);
+  useEffect(() => {
+    if (!currentAgentName) return;
+    const base = `api/widget/agents/${currentAgentName}/me/messages/`;
+    const url = `${base}?page=1&page_size=50`;
+    setMessages([]);
+    setLoadingInitial(true);
+    (async () => {
+      await fetchPage(url);
+      setLoadingInitial(false);
+      setTimeout(scrollToBottom, 0);
+    })();
+  }, [currentAgentName]);
+
+  useEffect(() => {
+    const rootEl = chatContainerRef.current;
+    const sentinel = sentinelRef.current;
+    if (!rootEl || !sentinel) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting && nextUrl && !loadingMore) {
+        setLoadingMore(true);
+        (async () => {
+          await fetchPage(nextUrl);
+          setLoadingMore(false);
+        })();
+      }
+    }, { root: rootEl, rootMargin: '0px', threshold: 1 });
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [nextUrl, loadingMore]);
+
+  const sendMessage = async (text) => {
+    if (!currentAgentName) {
+      message.warning('Agent name not loaded yet');
+      return;
+    }
+    const payload = [ { userInput: text, agent: currentAgentName } ];
+
+    // Append user bubble immediately
+    setMessages(prev => [...prev, { id: `${Date.now()}-u`, text, sender: 'user' }]);
+    setTimeout(scrollToBottom, 0);
+
+    setSending(true);
+    try {
+      const res = await postData('api/widget/agent-chat/', payload);
+      const data = res?.data;
+      const items = Array.isArray(data) ? data : (data?.results ?? (data ? [data] : []));
+      const botParts = items.map((itm, idx) => {
+        const botText = itm?.response ?? itm?.text ?? itm?.message ?? '';
+        const botAudio = itm?.response_audio ?? null;
+        return { id: `${Date.now()}-${idx}-b`, text: botText, audioUrl: botAudio, sender: 'bot' };
+      });
+      if (botParts.length) {
+        setMessages(prev => [...prev, ...botParts]);
+        setTimeout(scrollToBottom, 0);
+      }
+    } catch (err) {
+      console.error('Failed to send message', err);
+      message.error('Failed to send message');
+    } finally {
+      setSending(false);
+    }
   };
+
+  const handleSend = () => {
+    const text = inputText.trim();
+    if (!text) return;
+    setInputText('');
+    sendMessage(text);
+  };
+
+  const handleQuickAction = (action) => {
+    const text = (action || '').trim();
+    if (!text) return;
+    sendMessage(text);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto h-screen bg-white flex flex-col">
       {/* Header */}
       <div className="bg-green-600 text-white p-4 flex items-center justify-between" style={{ backgroundColor: themeColor }}>
         <div className="flex items-center gap-3">
-    <div className="flex items-center gap-2">
-      {logoSrc ? (
-        <img src={logoSrc} className="w-8 h-8 rounded" alt="logo" />
-      ) : (
-        <svg className="w-8 h-8" viewBox="0 0 32 32" fill="currentColor">
-          <path d="M16 4L4 10v6c0 8 5 14 12 18 7-4 12-10 12-18v-6L16 4z" />
-        </svg>
-      )}
-      <span className="text-xl font-bold" style={{ color: '#fff' }}>VIRTIX AI</span>
-    </div>
-  </div>
+          <div className="flex items-center gap-2">
+            {logoSrc ? (
+              <img src={logoSrc} className="w-8 h-8 rounded" alt="logo" />
+            ) : (
+              <svg className="w-8 h-8" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 4L4 10v6c0 8 5 14 12 18 7-4 12-10 12-18v-6L16 4z" />
+              </svg>
+            )}
+            <span className="text-xl font-bold" style={{ color: '#fff' }}>VIRTIX AI</span>
+          </div>
+        </div>
         <button className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50 relative">
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 bg-gray-50 relative">
+        {loadingInitial && (
+          <div className="text-center text-gray-500">Loading messages...</div>
+        )}
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -320,7 +435,10 @@ const MessageBox = ({ themeColor = '#05A84E', logoSrc, quickActions = [] }) => {
               className={`inline-block px-4 py-2 rounded-lg max-w-[75%] break-words whitespace-pre-wrap ${msg.sender === 'user' ? '' : 'bg-white text-gray-800 shadow-sm'}`}
               style={msg.sender === 'user' ? { backgroundColor: themeColor, color: '#fff' } : {}}
             >
-              {msg.text}
+              {msg.text && <div>{msg.text}</div>}
+              {msg.audioUrl && (
+                <audio src={msg.audioUrl} controls className="mt-2 w-full max-w-xs" />
+              )}
             </div>
           </div>
         ))}
@@ -342,6 +460,11 @@ const MessageBox = ({ themeColor = '#05A84E', logoSrc, quickActions = [] }) => {
             </div>
           </div>
         )}
+
+        {loadingMore && (
+          <div className="text-center text-gray-400 mt-2">Loading more...</div>
+        )}
+        <div ref={sentinelRef} className="h-1"></div>
       </div>
 
       {/* Input Area */}
@@ -350,8 +473,8 @@ const MessageBox = ({ themeColor = '#05A84E', logoSrc, quickActions = [] }) => {
           <input
             type="text"
             placeholder="Type here & press enter"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400"
           />
@@ -360,7 +483,8 @@ const MessageBox = ({ themeColor = '#05A84E', logoSrc, quickActions = [] }) => {
           </button>
           <button
             onClick={handleSend}
-            className="text-white p-2 rounded-full transition-colors"
+            disabled={sending}
+            className="text-white p-2 rounded-full transition-colors disabled:opacity-60"
             style={{ backgroundColor: themeColor }}
           >
             <Send className="w-5 h-5" />
